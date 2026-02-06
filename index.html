@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital SAT Practice Exam</title>
-   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
@@ -44,8 +44,7 @@
             <div class="timer" id="timerDisplay">70:00</div>
         </div>
         
-        <div class="q-area" id="qArea">
-            </div>
+        <div class="q-area" id="qArea"></div>
 
         <div class="footer">
             <button class="btn btn-secondary" onclick="moveQ(-1)">Previous</button>
@@ -54,6 +53,12 @@
     </div>
 
     <script>
+        // ==========================================
+        // 1. إعدادات وقت فتح الامتحان (عدلها من هنا)
+        // (السنة, الشهر-1, اليوم, الساعة, الدقيقة)
+        const EXAM_OPEN_DATE = new Date(2025, 0, 1, 10, 0); // مثال: 1 يناير 2025
+        // ==========================================
+
         let config = { name: "", email: "", phone: "" };
         let examData = { m1: [], m2: [] };
         let currentModule = 1;
@@ -61,14 +66,23 @@
         let userAnswers = { m1: {}, m2: {} };
         let timeLeft = 70 * 60;
 
-        // --- مفاتيحك التي تم ربطها بنجاح ---
         const PUBLIC_KEY = "kaJmN11jIcapGxZSh";
         const SERVICE_ID = "service_oq1o551";
-        const TEMPLATE_ID = "template_ks5ngtc"; // تم إضافة الكود الخاص بك هنا
+        const TEMPLATE_ID = "template_ks5ngtc";
 
         emailjs.init(PUBLIC_KEY);
 
         async function initExam() {
+            const now = new Date();
+            // نظام القفل الزمني
+            if (now < EXAM_OPEN_DATE) {
+                const diff = EXAM_OPEN_DATE - now;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                alert(`الامتحان لم يبدأ بعد!\nسيفتح في: ${EXAM_OPEN_DATE.toLocaleString()}\nباقي: ${hours} ساعة و ${mins} دقيقة.`);
+                return;
+            }
+
             config.name = document.getElementById('stuName').value;
             config.email = document.getElementById('stuEmail').value;
             config.phone = document.getElementById('stuPhone').value;
@@ -100,7 +114,7 @@
             document.getElementById('modLabel').innerText = `Module ${currentModule}`;
             document.getElementById('qCount').innerText = `Question ${currentIdx + 1} of ${list.length}`;
 
-            let html = `<div style="font-size: 1.2rem; line-height: 1.6;">${q.text}</div>`;
+            let html = `<div style="font-size: 1.25rem; line-height: 1.6; margin-bottom:20px;">${q.text}</div>`;
 
             if(q.type === 'mcq') {
                 html += `<div class="options">`;
@@ -113,7 +127,11 @@
             }
 
             area.innerHTML = html;
-            if(window.MathJax) MathJax.typeset();
+
+            // تحديث رموز الرياضيات فوراً بعد عرض السؤال
+            if(window.MathJax) {
+                MathJax.typesetPromise([area]).catch((err) => console.log(err));
+            }
             
             document.getElementById('nextBtn').innerText = (currentIdx === list.length - 1) ? (currentModule === 1 ? "Finish Module" : "Submit Exam") : "Next";
         }
@@ -154,7 +172,6 @@
         }
 
         function finishExam() {
-            // حساب الدرجة التلقائي
             let score = 0;
             let total = (examData.m1.length || 0) + (examData.m2.length || 0);
             
@@ -171,26 +188,18 @@
                 answers: JSON.stringify(userAnswers)
             };
 
-            // إرسال البيانات النهائية للإيميل
             emailjs.send(SERVICE_ID, TEMPLATE_ID, finalData)
                 .then(() => {
                     document.getElementById('examScreen').innerHTML = `
                         <div style="text-align:center; padding:40px;">
                             <h1 style="color:var(--blue);">Test Submitted!</h1>
-                            <div style="font-size: 1.5rem; margin: 20px 0;">Your Estimated Score: <span style="color:green;">${satScore}/800</span></div>
+                            <div style="font-size: 1.8rem; margin: 20px 0; color: #2e7d32; font-weight: bold;">Score: ${satScore} / 800</div>
                             <p>Thank you ${config.name}. Your results have been sent to the teacher.</p>
                         </div>`;
                 }, (err) => {
-                    alert("Error submitting. Please check your connection.");
-                    console.error("EmailJS Error:", err);
+                    alert("Error submitting. Take a screenshot of your score!");
                 });
         }
     </script>
-
-
-   
 </body>
-
 </html>
-
-
