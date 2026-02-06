@@ -1,0 +1,19 @@
+[
+  {
+    "type": "mcq",
+    "text": "1. If $5x + 3 = 18$, what is the value of $10x + 6$?",
+    "choices": ["30", "36", "40", "42"],
+    "answer": 1
+  },
+  {
+    "type": "grid-in",
+    "text": "2. A rectangle has a length of 12 and a width of 5. What is its area?",
+    "answer": "60"
+  },
+  {
+    "type": "mcq",
+    "text": "3. Which of the following is equivalent to $3(x + 5) - 2(x - 1)$?",
+    "choices": ["x + 13", "x + 17", "5x + 13", "5x + 17"],
+    "answer": 1
+  }
+]
