@@ -16,8 +16,8 @@
   {
     "id": 3,
     "type": "mcq",
-    "text": "The line y = mx + b passes through (0, 3) and has a slope of 2. What is the value of b?",
-    "choices": ["0", "2", "3", "5"],
+    "text": "In a triangle, two angles measure 35° and 55°. What is the measure of the third angle?",
+    "choices": ["70°", "80°", "90°", "100°"],
     "answer": 2
   },
   {
