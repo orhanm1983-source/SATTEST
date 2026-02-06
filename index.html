@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         let config = { name: "", email: "", phone: "" };
         let examData = { m1: [], m2: [] };
         let currentModule = 1;
@@ -61,17 +61,20 @@
         let userAnswers = { m1: {}, m2: {} };
         let timeLeft = 70 * 60;
 
-        // تشغيل EmailJS (سنعدل المفاتيح لاحقاً)
-        emailjs.init("YOUR_PUBLIC_KEY");
+        // --- ربط مفاتيح EmailJS الخاصة بك ---
+        const PUBLIC_KEY = "kaJmN11jIcapGxZSh";
+        const SERVICE_ID = "service_oq1o551";
+        const TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // سنضعه في الخطوة القادمة بعد سؤالك
+
+        emailjs.init(PUBLIC_KEY);
 
         async function initExam() {
             config.name = document.getElementById('stuName').value;
             config.email = document.getElementById('stuEmail').value;
             config.phone = document.getElementById('stuPhone').value;
 
-            if(!config.name || !config.email) return alert("Please fill your info!");
+            if(!config.name || !config.email || !config.phone) return alert("Please fill all your info!");
 
-            // تحميل الأسئلة
             try {
                 const r1 = await fetch('module1.json');
                 const r2 = await fetch('module2.json');
@@ -84,7 +87,7 @@
                 renderQuestion();
                 startTimer();
             } catch(e) {
-                alert("Error: Make sure module1.json and module2.json are in the same folder!");
+                alert("Error loading questions. Check JSON files on GitHub.");
             }
         }
 
@@ -110,7 +113,6 @@
             }
 
             area.innerHTML = html;
-            // تحديث رموز الرياضيات
             if(window.MathJax) MathJax.typeset();
             
             document.getElementById('nextBtn').innerText = (currentIdx === list.length - 1) ? (currentModule === 1 ? "Finish Module" : "Submit Exam") : "Next";
@@ -148,17 +150,37 @@
         }
 
         function finishExam() {
+            // حساب الدرجة
+            let score = 0;
+            let total = examData.m1.length + examData.m2.length;
+            examData.m1.forEach((q, i) => { if(userAnswers.m1[i] == q.answer) score++; });
+            examData.m2.forEach((q, i) => { if(userAnswers.m2[i] == q.answer) score++; });
+            let satScore = Math.round((score / total) * 800);
+
             const finalData = {
                 from_name: config.name,
                 from_email: config.email,
                 phone: config.phone,
+                score_summary: `Correct: ${score}/${total} (~${satScore}/800)`,
                 answers: JSON.stringify(userAnswers)
             };
 
-            // إرسال النتيجة (سنربطها في الخطوة القادمة)
-            console.log("Submitting...", finalData);
-            document.getElementById('examScreen').innerHTML = "<h1>Thank you!</h1><p>Your exam has been submitted. We will contact you soon.</p>";
+            // إرسال البيانات باستخدام مفاتيحك
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, finalData)
+                .then(() => {
+                    document.getElementById('examScreen').innerHTML = `
+                        <div style="text-align:center; padding:40px;">
+                            <h1 style="color:var(--blue);">Test Submitted!</h1>
+                            <p>Thank you ${config.name}. Your results have been sent to the teacher.</p>
+                        </div>`;
+                }, (err) => {
+                    alert("Submission error. Please copy your answers and send them manually.");
+                    console.error("EmailJS Error:", err);
+                });
         }
     </script>
+
+   
 </body>
+
 </html>
