@@ -37,8 +37,8 @@
   },
   {
     "type": "mcq",
-    "text": "A car travels 25 miles per gallon of gas. If gas costs $3 per gallon, how much does it cost to travel 100 miles?",
-    "choices": ["$4", "$12", "$25", "$75"],
+    "text": "A car travels 25 miles per gallon of gas. If gas costs 3 dollars per gallon, how much does it cost to travel 100 miles?",
+    "choices": ["4", "12", "25", "75"],
     "answer": 1
   },
   {
@@ -90,7 +90,7 @@
   },
   {
     "type": "grid-in",
-    "text": "A laptop costs $800. After a 20% discount, what is the price?",
+    "text": "A laptop costs 800 dollars. After a 20% discount, what is the price?",
     "answer": "640"
   },
   {
