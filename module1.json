@@ -74,6 +74,57 @@
     "type": "grid-in",
     "text": "If x + y = 10 and x - y = 4, what is the value of x?",
     "answer": "7"
+  },
+  {
+    "type": "mcq",
+    "text": "A function f(x) is defined as f(x) = x^2 - 5x + 6. What is the value of f(4)?",
+    "choices": ["2", "4", "6", "10"],
+    "answer": 0
+  },
+  {
+    "type": "mcq",
+    "text": "In the xy-plane, what is the y-intercept of the line 2x + 3y = 12?",
+    "choices": ["2", "3", "4", "6"],
+    "answer": 2
+  },
+  {
+    "type": "mcq",
+    "text": "If (x-3)^2 = 49, what is a possible value of x?",
+    "choices": ["-4", "4", "7", "10"],
+    "answer": 3
+  },
+  {
+    "type": "mcq",
+    "text": "If a/b = 2, what is the value of 4b/a?",
+    "choices": ["0", "1", "2", "4"],
+    "answer": 2
+  },
+  {
+    "type": "mcq",
+    "text": "Which of the following is equivalent to (2x + 3)(x - 5)?",
+    "choices": ["2x^2 - 15", "2x^2 - 7x - 15", "2x^2 + 7x - 15", "2x^2 - 13x - 15"],
+    "answer": 1
+  },
+  {
+    "type": "grid-in",
+    "text": "If 2(x + 5) = 30, what is the value of x?",
+    "answer": "10"
+  },
+  {
+    "type": "grid-in",
+    "text": "If the area of a square is 64, what is its perimeter?",
+    "answer": "32"
+  },
+  {
+    "type": "mcq",
+    "text": "A circle has center (0,0) and radius 5. Which point lies on the circle?",
+    "choices": ["(3, 3)", "(3, 4)", "(4, 4)", "(5, 5)"],
+    "answer": 1
+  },
+  {
+    "type": "grid-in",
+    "text": "If 0.2x = 40, what is the value of x?",
+    "answer": "200"
   }
 ]
 
