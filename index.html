@@ -53,7 +53,7 @@
         </div>
     </div>
 
-<script>
+    <script>
         let config = { name: "", email: "", phone: "" };
         let examData = { m1: [], m2: [] };
         let currentModule = 1;
@@ -61,10 +61,10 @@
         let userAnswers = { m1: {}, m2: {} };
         let timeLeft = 70 * 60;
 
-        // --- ربط مفاتيح EmailJS الخاصة بك ---
+        // --- مفاتيحك التي تم ربطها بنجاح ---
         const PUBLIC_KEY = "kaJmN11jIcapGxZSh";
         const SERVICE_ID = "service_oq1o551";
-        const TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // سنضعه في الخطوة القادمة بعد سؤالك
+        const TEMPLATE_ID = "template_ks5ngtc"; // تم إضافة الكود الخاص بك هنا
 
         emailjs.init(PUBLIC_KEY);
 
@@ -142,20 +142,26 @@
 
         function startTimer() {
             const countdown = setInterval(() => {
-                timeLeft--;
-                let m = Math.floor(timeLeft/60), s = timeLeft%60;
-                document.getElementById('timerDisplay').innerText = `${m}:${s<10?'0':''}${s}`;
-                if(timeLeft <= 0) { clearInterval(countdown); finishExam(); }
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    let m = Math.floor(timeLeft/60), s = timeLeft%60;
+                    document.getElementById('timerDisplay').innerText = `${m}:${s<10?'0':''}${s}`;
+                } else { 
+                    clearInterval(countdown); 
+                    finishExam(); 
+                }
             }, 1000);
         }
 
         function finishExam() {
-            // حساب الدرجة
+            // حساب الدرجة التلقائي
             let score = 0;
-            let total = examData.m1.length + examData.m2.length;
+            let total = (examData.m1.length || 0) + (examData.m2.length || 0);
+            
             examData.m1.forEach((q, i) => { if(userAnswers.m1[i] == q.answer) score++; });
             examData.m2.forEach((q, i) => { if(userAnswers.m2[i] == q.answer) score++; });
-            let satScore = Math.round((score / total) * 800);
+            
+            let satScore = total > 0 ? Math.round((score / total) * 800) : 0;
 
             const finalData = {
                 from_name: config.name,
@@ -165,22 +171,25 @@
                 answers: JSON.stringify(userAnswers)
             };
 
-            // إرسال البيانات باستخدام مفاتيحك
+            // إرسال البيانات النهائية للإيميل
             emailjs.send(SERVICE_ID, TEMPLATE_ID, finalData)
                 .then(() => {
                     document.getElementById('examScreen').innerHTML = `
                         <div style="text-align:center; padding:40px;">
                             <h1 style="color:var(--blue);">Test Submitted!</h1>
+                            <div style="font-size: 1.5rem; margin: 20px 0;">Your Estimated Score: <span style="color:green;">${satScore}/800</span></div>
                             <p>Thank you ${config.name}. Your results have been sent to the teacher.</p>
                         </div>`;
                 }, (err) => {
-                    alert("Submission error. Please copy your answers and send them manually.");
+                    alert("Error submitting. Please check your connection.");
                     console.error("EmailJS Error:", err);
                 });
         }
     </script>
 
+
    
 </body>
 
 </html>
+
