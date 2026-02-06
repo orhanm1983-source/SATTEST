@@ -119,36 +119,46 @@
             }
         }
 
-        function renderQuestion() {
-            const list = currentModule === 1 ? examData.m1 : examData.m2;
-            const q = list[currentIdx];
-            const area = document.getElementById('qArea');
-            const saved = userAnswers[`m${currentModule}`][currentIdx];
+function renderQuestion() {
+    const list = currentModule === 1 ? examData.m1 : examData.m2;
+    const q = list[currentIdx];
+    const area = document.getElementById('qArea');
+    const saved = userAnswers[`m${currentModule}`][currentIdx];
 
-            document.getElementById('modLabel').innerText = `Module ${currentModule}`;
-            document.getElementById('qCount').innerText = `Question ${currentIdx + 1} of ${list.length}`;
+    document.getElementById('modLabel').innerText = `Module ${currentModule}`;
+    document.getElementById('qCount').innerText = `Question ${currentIdx + 1} of ${list.length}`;
 
-            let html = `<div style="font-size: 1.25rem; line-height: 1.6; margin-bottom:20px;">${q.text}</div>`;
+    // إضافة تحويل تلقائي بسيط للنص قبل عرضه
+    let processedText = q.text
+        .replace(/\^(\d+|\w+)/g, "<sup>$1</sup>") // تحويل ^2 إلى أس حقيقي
+        .replace(/\b(\w+)\/(\w+)\b/g, "<sup>$1</sup>&frasl;<sub>$2</sub>"); // تحويل x/y إلى كسر بسيط
 
-            if(q.type === 'mcq') {
-                html += `<div class="options">`;
-                q.choices.forEach((c, i) => {
-                    html += `<button class="opt-btn ${saved === i ? 'active' : ''}" onclick="selectOpt(${i})">${String.fromCharCode(65+i)}. ${c}</button>`;
-                });
-                html += `</div>`;
-            } else {
-                html += `<div style="margin-top:20px;"><input type="text" class="grid-input" placeholder="Enter numeric answer" oninput="selectOpt(this.value)" value="${saved || ''}"></div>`;
-            }
+    let html = `<div style="font-size: 1.25rem; line-height: 1.6; margin-bottom:20px;">${processedText}</div>`;
 
-            area.innerHTML = html;
+    if(q.type === 'mcq') {
+        html += `<div class="options">`;
+        q.choices.forEach((c, i) => {
+            // تحويل الرموز في الخيارات أيضاً
+            let processedChoice = c.toString().replace(/\^(\d+|\w+)/g, "<sup>$1</sup>");
+            html += `<button class="opt-btn ${saved === i ? 'active' : ''}" onclick="selectOpt(${i})">${String.fromCharCode(65+i)}. ${processedChoice}</button>`;
+        });
+        html += `</div>`;
+    } else {
+        html += `<div style="margin-top:20px;"><input type="text" class="grid-input" placeholder="Enter numeric answer" oninput="selectOpt(this.value)" value="${saved || ''}"></div>`;
+    }
 
-            // تحديث رموز الرياضيات فوراً بعد عرض السؤال
-            if(window.MathJax) {
-                MathJax.typesetPromise([area]).catch((err) => console.log(err));
-            }
-            
-            document.getElementById('nextBtn').innerText = (currentIdx === list.length - 1) ? (currentModule === 1 ? "Finish Module" : "Submit Exam") : "Next";
-        }
+    area.innerHTML = html;
+
+    // تشغيل MathJax إذا كان هناك معادلات معقدة
+    if(window.MathJax && window.MathJax.typeset) {
+        MathJax.typesetPromise([area]).catch((err) => console.log(err));
+    }
+    
+    document.getElementById('nextBtn').innerText = (currentIdx === list.length - 1) ? (currentModule === 1 ? "Finish Module" : "Submit Exam") : "Next";
+}
+
+        
+      
 
         function selectOpt(val) {
             userAnswers[`m${currentModule}`][currentIdx] = val;
@@ -217,5 +227,6 @@
     </script>
 </body>
 </html>
+
 
 
