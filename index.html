@@ -129,9 +129,10 @@ function renderQuestion() {
     document.getElementById('qCount').innerText = `Question ${currentIdx + 1} of ${list.length}`;
 
     // إضافة تحويل تلقائي بسيط للنص قبل عرضه
-    let processedText = q.text
-        .replace(/\^(\d+|\w+)/g, "<sup>$1</sup>") // تحويل ^2 إلى أس حقيقي
-        .replace(/\b(\w+)\/(\w+)\b/g, "<sup>$1</sup>&frasl;<sub>$2</sub>"); // تحويل x/y إلى كسر بسيط
+   let processedText = q.text
+    .replace(/root\(([^)]+)\)/g, "<span style='white-space:nowrap;'>&radic;<span style='border-top:1px solid; padding-top:1px;'>$1</span></span>") 
+    .replace(/\^(\d+|\w+)/g, "<sup>$1</sup>") 
+    .replace(/\b(\w+)\/(\w+)\b/g, "<sup>$1</sup>&frasl;<sub>$2</sub>");إلى كسر بسيط
 
     let html = `<div style="font-size: 1.25rem; line-height: 1.6; margin-bottom:20px;">${processedText}</div>`;
 
@@ -227,6 +228,7 @@ function renderQuestion() {
     </script>
 </body>
 </html>
+
 
 
 
