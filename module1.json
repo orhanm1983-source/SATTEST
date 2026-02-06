@@ -3,109 +3,109 @@
     "type": "mcq",
     "text": "A painter will paint n walls with the same size and shape in a building. The painter fee can be calculated by the expression: nKlh, where n is the number of walls, K is a constant in dollars per square foot, l is the length of each wall, and h is the height. If the customer asks for a more expensive brand of paint, which factor will change?",
     "choices": ["h", "l", "K", "n"],
-    "answer": 2
+    "answer": "2"
   },
   {
     "type": "mcq",
     "text": "If 3r = 18, what is the value of 6r + 3?",
     "choices": ["6", "27", "36", "39"],
-    "answer": 3
+    "answer": "3"
   },
   {
     "type": "mcq",
     "text": "Which of the following is equivalent to a^(2/3) for all values of a?",
     "choices": ["square root of a^3", "cube root of a^2", "square root of a^(1/3)", "cube root of a^(1/2)"],
-    "answer": 1
+    "answer":" 1"
   },
   {
     "type": "mcq",
     "text": "The number of states that joined the US between 1776 and 1849 is twice the number of states that joined between 1850 and 1900. If 30 states joined between 1776 and 1849, how many joined between 1850 and 1900?",
     "choices": ["15", "30", "60", "90"],
-    "answer": 0
+    "answer": "0"
   },
   {
     "type": "mcq",
     "text": "If 5/x = 15/(x+20), what is the value of x/5?",
     "choices": ["10", "5", "2", "1/2"],
-    "answer": 2
+    "answer": "2"
   },
   {
     "type": "mcq",
     "text": "If x - y = 3 and x + y = 5, what is the value of x^2 - y^2?",
     "choices": ["2", "8", "15", "25"],
-    "answer": 1
+    "answer": "1"
   },
   {
     "type": "mcq",
     "text": "A line in the xy-plane passes through the origin and has a slope of 1/7. Which point lies on the line?",
     "choices": "(0, 7)", "(1, 7)", "(7, 7)", "(14, 2)",
-    "answer": 3
+    "answer": "3"
   },
   {
     "type": "mcq",
     "text": "If a = 5 root 2 and 2a = root(2x), what is the value of x?",
     "choices": ["25", "50", "100", "200"],
-    "answer": 2
+    "answer": "2"
   },
   {
     "type": "mcq",
     "text": "If (x-1)/3 = k and k = 3, what is the value of x?",
     "choices": ["2", "4", "9", "10"],
-    "answer": 3
+    "answer": "3"
   },
   {
     "type": "mcq",
     "text": "For i = root(-1), what is the sum of (7 + 3i) + (-8 + 9i)?",
     "choices": ["-1 + 12i", "-1 - 6i", "15 + 12i", "15 - 6i"],
-    "answer": 0
+    "answer": "0"
   },
   {
     "type": "mcq",
     "text": "On Saturday afternoon, Armand sent m messages per hour for 5 hours, and Tyrone sent p messages per hour for 4 hours. Which represents the total messages sent?",
     "choices": ["9mp", "20mp", "5m + 4p", "4m + 5p"],
-    "answer": 2
+    "answer": "2"
   },
   {
     "type": "mcq",
     "text": "Kathy is a technician. She has P = 108 - 23d phones left to fix, where d is days worked. What does 108 represent?",
     "choices": ["Days to finish", "Starting number of phones", "Phones per hour", "Phones per day"],
-    "answer": 1
+    "answer": "1"
   },
   {
     "type": "mcq",
     "text": "Which of the following is equivalent to (x^2y - 3y^2 + 5xy^2) - (-x^2y + 3xy^2 - 3y^2)?",
     "choices": ["2x^2y + 2xy^2", "8xy^2 - 6y^2", "2x^2y + 8xy^2 - 6y^2", "x^4y^2 + 9xy^4"],
-    "answer": 0
+    "answer": "0"
   },
   {
     "type": "mcq",
     "text": "If h(x) = 2x^2 - 3 and h(m) = 5, what is a possible value of m?",
     "choices": ["-2", "0", "2", "4"],
-    "answer": 2
+    "answer": "2"
   },
   {
     "type": "mcq",
     "text": "A food truck sells salads for $6.50 and drinks for $2.00. Total 209 items were sold for $836.50. How many salads were sold?",
     "choices": ["77", "93", "99", "105"],
-    "answer": 1
+    "answer": "1"
   },
   {
     "type": "mcq",
     "text": "If x > 3, which of the following is equivalent to 1 / [1/(x+2) + 1/(x+3)]?",
     "choices": ["(2x+5)/(x^2+5x+6)", "(x^2+5x+6)/(2x+5)", "2x+5", "x^2+5x+6"],
-    "answer": 1
+    "answer": "1"
   },
   {
     "type": "mcq",
     "text": "If 3x - y = 12, what is the value of (8^x) / (2^y)?",
     "choices": ["2^12", "4^4", "8^2", "The value cannot be determined"],
-    "answer": 0
+    "answer": "0"
   },
   {
     "type": "mcq",
     "text": "If (ax + 2)(bx + 7) = 15x^2 + cx + 14 and a + b = 8, what are the two possible values for c?",
     "choices": ["3 and 5", "6 and 35", "10 and 21", "31 and 41"],
-    "answer": 3
+    "answer": "3"
   },
   {
     "type": "grid-in",
@@ -128,4 +128,5 @@
     "answer": "16"
   }
 ]
+
 
