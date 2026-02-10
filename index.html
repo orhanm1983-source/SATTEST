@@ -1,57 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital SAT Portal - Home</title>
+    <title>TALAL.TEK - منصة السات الرقمي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --blue: #0071ce; --dark: #1e1e1e; --bg: #f3f4f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        
-        .welcome-card { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; max-width: 600px; width: 90%; }
-        .logo { font-size: 3rem; color: var(--blue); margin-bottom: 10px; }
-        h1 { color: var(--dark); margin-bottom: 30px; }
-        p { color: #666; font-size: 1.1rem; margin-bottom: 40px; }
-
-        .choice-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        .choice-box { 
-            padding: 30px; border: 2px solid #eee; border-radius: 15px; cursor: pointer; 
-            transition: 0.3s; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit;
+        :root { 
+            --bg-color: #f8fafc; /* رمادي مائل للأزرق هادئ جداً */
+            --main-blue: #2c3e50; /* أزرق غامق وقور */
+            --sky-blue: #3498db; /* أزرق سماوي للبراند */
+            --white: #ffffff;
+            --text-gray: #64748b;
         }
-        .choice-box:hover { border-color: var(--blue); background: #f0f7ff; transform: translateY(-5px); }
-        .choice-box i { font-size: 2.5rem; margin-bottom: 15px; color: var(--blue); }
-        .choice-box h3 { margin: 10px 0; }
-        .choice-box span { font-size: 0.9rem; color: #888; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh;
+            overflow: hidden;
+        }
 
-        .footer-note { margin-top: 40px; font-size: 0.8rem; color: #aaa; }
-    </style>
-</head>
-<body>
+        .welcome-card {
+            background: var(--white);
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
 
-<div class="welcome-card">
-    <div class="logo">📐</div>
-    <h1>Digital SAT Prep Portal</h1>
-    <p>Welcome, Hero! How would you like to start today?</p>
+        .brand-name {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--main-blue);
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
 
-    <div class="choice-container">
-        <a href="course.html" class="choice-box">
-            <i>🎥</i>
-            <h3>Video Lessons</h3>
-            <span>Study & Learn the basics</span>
-        </a>
+        .brand-name span { 
+            color: var(--sky-blue); 
+        }
 
-        <a href="exam.html" class="choice-box">
-            <i>📝</i>
-            <h3>Practice Test</h3>
-            <span>Challenge your skills</span>
-        </a>
-    </div>
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 45px;
+            font-weight: 300;
+        }
 
-    <div class="footer-note">
-        Powered by Digital SAT Practical Test System
-    </div>
-</div>
+        .nav-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-</body>
-</html>
+        .nav-btn {
+            padding: 18px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-lessons {
+            background-color: var(--main-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-exam {
+            background-color: transparent;
+            border: 2px solid var(--main-blue);
+            color: var(--main-blue);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.15);
+        }
+
+        /* أيقونة التواصل العائمة */
+        .contact-link {
+            position: fixed;
+            bottom: 35px;
+            left: 35px; /* وضعناها لليسار لأن الصفحة RTL */
+            background: #25d366;
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
