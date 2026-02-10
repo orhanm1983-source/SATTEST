@@ -1,103 +1,27 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK - الواجهة الرئيسية</title>
+    <meta charset="UTF-8"><title>TALAL.TEK - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --bg: #f8fafc; 
-            --main: #2c3e50; 
-            --sky: #3498db; 
-            --white: #ffffff;
-        }
-        
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; background: var(--bg); 
-            display: flex; align-items: center; justify-content: center; 
-            height: 100vh;
-        }
-
-        .main-card {
-            background: var(--white);
-            padding: 50px 40px;
-            border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
-            text-align: center;
-            max-width: 450px;
-            width: 85%;
-            border: 1px solid rgba(255,255,255,0.7);
-        }
-
-        .brand { font-size: 2.8rem; font-weight: 900; color: var(--main); margin-bottom: 5px; }
-        .brand span { color: var(--sky); }
-
-        .welcome-msg {
-            font-size: 1.2rem;
-            color: #64748b;
-            margin-bottom: 40px;
-            font-weight: 500;
-        }
-
-        .btn-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 18px;
-            border-radius: 15px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: 0.3s;
-        }
-
-        /* تنسيق الأزرار */
-        .btn-lessons { background: var(--main); color: white; border: none; }
-        .btn-exam { background: transparent; border: 2px solid var(--main); color: var(--main); }
-
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-        .footer { margin-top: 35px; font-size: 0.8rem; color: #cbd5e1; }
+        body { font-family: sans-serif; background: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 400px; }
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; margin: 10px 0; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; }
+        .btn-blue { background: #2c3e50; color: white; }
+        .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; }
     </style>
 </head>
 <body>
-
-<div class="main-card">
-    <div class="brand">TALAL<span>.TEK</span></div>
-    
-    <div class="welcome-msg" id="displayTitle">أهلاً بك أيها البطل</div>
-
-    <div class="btn-grid">
-        <a href="course.html" class="btn btn-lessons">
-            <i class="fas fa-play-circle"></i> الدروس التعليمية
-        </a>
-
-        <a href="exam.html" class="btn btn-exam">
-            <i class="fas fa-edit"></i> الاختبار العملي
-        </a>
+    <div class="card">
+        <h1 id="welcome">أهلاً بك</h1>
+        <div class="btn-group">
+            <a href="course.html" class="btn btn-blue"><i class="fas fa-video"></i> الدروس التعليمية</a>
+            <a href="exam.html" class="btn btn-outline"><i class="fas fa-edit"></i> الاختبار العملي</a>
+        </div>
     </div>
-
-    <div class="footer">TALAL.TEK ACADEMY © 2026</div>
-</div>
-
-<script>
-    // كود جلب الاسم
-    window.onload = function() {
-        const name = localStorage.getItem('student_name');
-        if (name) {
-            document.getElementById('displayTitle').innerText = `أهلاً بك يا ${name}، اختر طريقك اليوم`;
-        }
-    };
-</script>
-
+    <script>
+        const name = localStorage.getItem('student_name') || "أيها البطل";
+        document.getElementById('welcome').innerText = "أهلاً بك يا " + name;
+    </script>
 </body>
 </html>
