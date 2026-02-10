@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALAL.TEK - تسجيل الدخول</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --main-blue: #2c3e50; --sky: #3498db; --bg: #f0f4f8; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d7e2eb 100%);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            width: 100%; max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .brand { font-size: 2.5rem; font-weight: 800; color: var(--main-blue); margin-bottom: 5px; }
+        .brand span { color: var(--sky); }
+        .welcome-text { color: #7f8c8d; margin-bottom: 35px; font-size: 1rem; }
+
+        .input-group { margin-bottom: 20px; position: relative; text-align: right; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--main-blue); font-size: 0.9rem; }
+        .input-group input {
+            width: 100%; padding: 15px; border-radius: 12px;
+            border: 2px solid #eee; outline: none; transition: 0.3s;
+            box-sizing: border-box; font-size: 1rem;
+        }
+        .input-group input:focus { border-color: var(--sky); background: #fff; }
+
+        .btn-login {
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            background: var(--main-blue); color: white; font-size: 1.1rem;
+            font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-login:hover { background: var(--sky); transform: translateY(-2px); }
+
+        .footer-text { margin-top: 25px; font-size: 0.8rem; color: #bdc3c7; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="brand">TALAL<span>.TEK</span></div>
+    <p class="welcome-text">مرحباً بك.. يرجى تسجيل الدخول للمتابعة</p>
+
+    <form onsubmit="handleLogin(event)">
+        <div class="input-group">
+            <label>اسم الطالب</label>
+            <input type="text" id="studentName" placeholder="أدخل اسمك الكامل" required>
+        </div>
+        
+        <div class="input-group">
+            <label>كود الدخول (اختياري)</label>
+            <input type="password" id="accessCode" placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="btn-login">دخول المنصة</button>
+    </form>
+
+    <div class="footer-text">نظام التقييم الذكي لطلاب السات الرقمي</div>
+</div>
+
+<script>
+    function handleLogin(event) {
+        event.preventDefault();
+        const name = document.getElementById('studentName').value;
+        
+        // حفظ الاسم في ذاكرة المتصفح لاستخدامه في صفحة الترحيب والامتحان
+        localStorage.setItem('talal_student_name', name);
+        
+        // التوجه لصفحة الترحيب (index.html)
+        window.location.href = "index.html";
+    }
+</script>
+
+</body>
+</html>
