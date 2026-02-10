@@ -1,200 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital SAT Practice Exam</title>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>TALAL.TEK - الاختبار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --blue: #0071ce; --dark: #1e1e1e; --bg: #f3f4f6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: #333; line-height: 1.6; }
+        :root { --main: #2c3e50; --sky: #3498db; --bg: #f8fafc; --green: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        /* --- تنسيقات المعادلات الرياضية الاحترافية --- */
-        sup { font-size: 0.8em; vertical-align: super; line-height: 0; }
+        /* شريط علوي لاسم الطالب */
+        .student-bar { display: flex; justify-content: space-between; align-items: center; background: #eef6fc; padding: 10px 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #d0e4f5; }
+        .student-name { color: var(--main); font-weight: bold; }
+        .home-link { text-decoration: none; color: var(--sky); font-size: 0.9rem; }
+
+        .question-box { margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; }
+        .question-text { font-size: 1.2rem; color: var(--main); margin-bottom: 15px; display: block; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .option { padding: 12px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .option:hover { background: #f0f7ff; border-color: var(--sky); }
+        .option.selected { background: var(--sky); color: white; border-color: var(--sky); }
+
+        .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; margin-top: 20px; }
         
-        /* الكسر الرأسي */
-        .math-frac {
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            margin: 0 4px;
-            font-size: 0.9em;
-        }
-        .math-frac .num { display: block; border-bottom: 1.5px solid #333; padding: 0 3px; }
-        .math-frac .den { display: block; padding: 0 3px; }
-
-        /* الجذر التربيحي */
-        .math-root {
-            display: inline-block;
-            white-space: nowrap;
-            font-family: 'Times New Roman', serif;
-        }
-        .root-symbol { font-size: 1.3em; vertical-align: middle; margin-right: -2px; }
-        .root-content {
-            border-top: 1.5px solid #333;
-            padding: 1px 3px 0 3px;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* --- تنسيق الواجهة --- */
-        .setup-screen, .exam-screen { max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 25px; }
-        .timer { background: #fee2e2; color: #dc2626; padding: 10px 20px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; border: 1px solid #fecaca; }
-        .q-area { min-height: 300px; font-size: 1.25rem; }
-        .options { display: grid; gap: 12px; margin-top: 25px; }
-        .opt-btn { padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; cursor: pointer; text-align: left; transition: 0.2s; background: white; font-size: 1rem; display: flex; align-items: center; }
-        .opt-btn:hover { border-color: var(--blue); background: #f0f7ff; }
-        .opt-btn.active { border-color: var(--blue); background: #e6f2ff; border-width: 2px; font-weight: bold; }
-        .grid-input { width: 100%; padding: 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1.2rem; }
-        .footer { display: flex; justify-content: space-between; margin-top: 40px; }
-        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-primary { background: var(--blue); color: white; }
-        .btn-secondary { background: #6b7280; color: white; }
-        input[type="text"], input[type="email"], input[type="tel"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        /* شاشة النتيجة */
+        #resultModal { display: none; text-align: center; padding: 40px; }
+        .score-circle { width: 120px; height: 120px; line-height: 120px; border-radius: 50%; background: var(--green); color: white; font-size: 2rem; margin: 20px auto; }
     </style>
 </head>
 <body>
 
-    <div id="setupScreen" class="setup-screen">
-        <h1 style="color: var(--blue);">Student Registration</h1>
-        <p>Please enter your details to begin.</p>
-        <input type="text" id="stuName" placeholder="Full Name">
-        <input type="email" id="stuEmail" placeholder="Email Address">
-        <input type="tel" id="stuPhone" placeholder="Phone Number">
-        <button class="btn btn-primary" style="width: 100%;" onclick="initExam()">Start Test</button>
+<div class="container" id="quizContainer">
+    <div class="student-bar">
+        <div class="student-name">
+            <i class="fas fa-user-graduate"></i> الطالب: <span id="stuDisplayName">...</span>
+        </div>
+        <a href="home.html" class="home-link"><i class="fas fa-home"></i> الرئيسية</a>
     </div>
 
-    <div id="examScreen" class="exam-screen" style="display: none;">
-        <div class="header">
-            <div><span id="modLabel" style="font-weight: bold; color: var(--blue);">Module 1</span> | <span id="qCount">Question 1</span></div>
-            <div class="timer" id="timerDisplay">70:00</div>
-        </div>
-        <div class="q-area" id="qArea"></div>
-        <div class="footer">
-            <button class="btn btn-secondary" onclick="moveQ(-1)">Back</button>
-            <button class="btn btn-primary" onclick="moveQ(1)" id="nextBtn">Next</button>
+    <div id="quizArea">
+        <div class="question-box">
+            <span class="question-text">جاري تحميل الأسئلة...</span>
         </div>
     </div>
+    
+    <button class="submit-btn" onclick="showResult()">إنهاء الاختبار وعرض النتيجة</button>
+</div>
 
-    <script>
-        let config = { name: "", email: "", phone: "" };
-        let examData = { m1: [], m2: [] };
-        let currentModule = 1, currentIdx = 0, timeLeft = 70 * 60;
-        let userAnswers = { m1: {}, m2: {} };
+<div class="container" id="resultModal">
+    <h2 style="color: var(--main);">تم انتهاء الاختبار بنجاح!</h2>
+    <p id="congratsMsg" style="font-size: 1.2rem;"></p>
+    <div class="score-circle" id="finalScore">0</div>
+    <div style="margin-top: 30px;">
+        <a href="home.html" class="submit-btn" style="text-decoration: none; display: block;">العودة للقائمة الرئيسية</a>
+    </div>
+</div>
 
-        emailjs.init("kaJmN11jIcapGxZSh");
+<script>
+    // 1. عرض اسم الطالب فور الدخول
+    document.addEventListener('DOMContentLoaded', () => {
+        const name = localStorage.getItem('student_name') || 'أيها البطل';
+        document.getElementById('stuDisplayName').innerText = name;
+    });
 
-        async function initExam() {
-            config.name = document.getElementById('stuName').value;
-            config.email = document.getElementById('stuEmail').value;
-            config.phone = document.getElementById('stuPhone').value;
-            if(!config.name || !config.email) return alert("Please fill your info!");
-
-            try {
-                const [r1, r2] = await Promise.all([fetch('module1.json'), fetch('module2.json')]);
-                examData.m1 = await r1.json();
-                examData.m2 = await r2.json();
-                document.getElementById('setupScreen').style.display = 'none';
-                document.getElementById('examScreen').style.display = 'block';
-                renderQuestion();
-                startTimer();
-            } catch(e) { alert("Error loading questions. Check JSON files on GitHub."); }
-        }
-
-        // تحسين دالة المعالجة الرياضية للتعامل مع الكسور المتداخلة
-        function formatMath(text) {
-            if (!text) return "";
-            let formatted = text.toString();
-            
-            // معالجة الكسور: frac(top/bottom)
-            // نكررها مرتين لدعم الكسور داخل الكسور
-            for(let i=0; i<2; i++) {
-                formatted = formatted.replace(/frac\(([^/]+)\/([^)]+)\)/g, 
-                '<span class="math-frac"><span class="num">$1</span><span class="den">$2</span></span>');
-            }
-
-            // معالجة الجذور: root(content)
-            formatted = formatted.replace(/root\(([^)]+)\)/g, 
-            '<span class="math-root"><span class="root-symbol">&radic;</span><span class="root-content">$1</span></span>');
-
-            // معالجة الأسس: ^2 أو ^(x+1)
-            formatted = formatted.replace(/\^(\(([^)]+)\)|(\w+))/g, (m, p1, p2, p3) => `<sup>${p2 || p3}</sup>`);
-
-            return formatted;
-        }
-
-        function renderQuestion() {
-            const list = currentModule === 1 ? examData.m1 : examData.m2;
-            const q = list[currentIdx];
-            const area = document.getElementById('qArea');
-            const saved = userAnswers[`m${currentModule}`][currentIdx];
-
-            document.getElementById('modLabel').innerText = `Module ${currentModule}`;
-            document.getElementById('qCount').innerText = `Question ${currentIdx + 1} of ${list.length}`;
-
-            let html = `<div>${formatMath(q.text)}</div>`;
-
-            if(q.type === 'mcq') {
-                html += `<div class="options">`;
-                q.choices.forEach((c, i) => {
-                    const label = String.fromCharCode(65+i);
-                    html += `<button class="opt-btn ${saved === i ? 'active' : ''}" onclick="selectOpt(${i})">
-                                <b style="color:var(--blue); margin-right:10px;">${label}.</b> ${formatMath(c)}
-                             </button>`;
-                });
-                html += `</div>`;
-            } else {
-                html += `<input type="text" class="grid-input" style="margin-top:20px" placeholder="Your Answer" oninput="selectOpt(this.value)" value="${saved || ''}">`;
-            }
-
-            area.innerHTML = html;
-            document.getElementById('nextBtn').innerText = (currentIdx === list.length - 1) ? (currentModule === 1 ? "Finish Module" : "Submit Test") : "Next";
-        }
-
-        function selectOpt(val) {
-            userAnswers[`m${currentModule}`][currentIdx] = val;
-            if(examData[`m${currentModule}`][currentIdx].type === 'mcq') renderQuestion();
-        }
-
-        function moveQ(step) {
-            const list = currentModule === 1 ? examData.m1 : examData.m2;
-            if(step === 1 && currentIdx === list.length - 1) {
-                if(currentModule === 1) {
-                    if(confirm("Move to Module 2?")) { currentModule = 2; currentIdx = 0; renderQuestion(); }
-                } else {
-                    if(confirm("Submit Exam?")) finishExam();
-                }
-                return;
-            }
-            let newIdx = currentIdx + step;
-            if(newIdx >= 0 && newIdx < list.length) { currentIdx = newIdx; renderQuestion(); }
-        }
-
-        function startTimer() {
-            setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    let m = Math.floor(timeLeft/60), s = timeLeft%60;
-                    document.getElementById('timerDisplay').innerText = `${m}:${s<10?'0':''}${s}`;
-                } else { finishExam(); }
-            }, 1000);
-        }
-
-        function finishExam() {
-            let score = 0;
-            examData.m1.forEach((q, i) => { if(userAnswers.m1[i] == q.answer) score++; });
-            examData.m2.forEach((q, i) => { if(userAnswers.m2[i] == q.answer) score++; });
-            let satScore = Math.round((score / (examData.m1.length + examData.m2.length)) * 800);
-
-            emailjs.send("service_oq1o551", "template_ks5ngtc", {
-                from_name: config.name,
-                score_summary: `Final Score: ${satScore}/800`,
-                answers: JSON.stringify(userAnswers)
-            }).then(() => {
-                document.getElementById('examScreen').innerHTML = `<h1 style="text-align:center">Test Submitted!<br>Score: ${satScore}</h1>`;
-            });
-        }
-    </script>
-</body>
-</html>
+    // 2. دالة عرض النتيجة مع رسالة مخصصة
+    function showResult() {
+        const name = localStorage.getItem('student_name') || 'بطل طلال تيك';
+        const score = 85; // هذه النتيجة مثال، يمكنك ربطها بحسابك الحقيقي للأسئلة
+        
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('resultModal').style.display = 'block';
+        
+        document.getElementById('congratsMsg').innerText = `أحسنت يا ${name}! لقد بذلت مجهوداً رائعاً.`;
+        document.getElementById('finalScore').innerText = score
