@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK - منصة السات الرقمي</title>
+    <title>TALAL.TEK - بوابة التفوق</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
-            --bg-color: #f8fafc; /* رمادي مائل للأزرق هادئ جداً */
-            --main-blue: #2c3e50; /* أزرق غامق وقور */
-            --sky-blue: #3498db; /* أزرق سماوي للبراند */
+            --bg-color: #f8fafc; 
+            --main-blue: #2c3e50; 
+            --sky-blue: #3498db; 
             --white: #ffffff;
             --text-gray: #64748b;
         }
         
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             margin: 0; 
             background-color: var(--bg-color); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             height: 100vh;
-            overflow: hidden;
         }
 
         .welcome-card {
             background: var(--white);
-            padding: 60px 40px;
+            padding: 50px 40px;
             border-radius: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.03);
             text-align: center;
@@ -37,22 +36,21 @@
         }
 
         .brand-name {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 900;
             color: var(--main-blue);
-            letter-spacing: -2px;
+            letter-spacing: -1px;
             margin-bottom: 10px;
         }
 
-        .brand-name span { 
-            color: var(--sky-blue); 
-        }
+        .brand-name span { color: var(--sky-blue); }
 
         .tagline {
             font-size: 1.1rem;
             color: var(--text-gray);
-            margin-bottom: 45px;
-            font-weight: 300;
+            margin-bottom: 40px;
+            font-weight: 400;
+            min-height: 1.5em; /* لحجز مساحة الاسم قبل التحميل */
         }
 
         .nav-container {
@@ -67,7 +65,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 1.1rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,65 +86,33 @@
 
         .nav-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.15);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.1);
         }
 
-        /* أيقونة التواصل العائمة */
-        .contact-link {
+        /* أيقونة واتساب */
+        .whatsapp-btn {
             position: fixed;
-            bottom: 35px;
-            left: 35px; /* وضعناها لليسار لأن الصفحة RTL */
+            bottom: 30px;
+            left: 30px;
             background: #25d366;
             color: white;
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-            transition: 0.4s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             text-decoration: none;
-            z-index: 1000;
+            transition: 0.3s;
         }
 
-        .contact-link:hover {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        .copyright {
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            letter-spacing: 1px;
-        }
+        .whatsapp-btn:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <div class="welcome-card">
     <div class="brand-name">TALAL<span>.TEK</span></div>
-    <div class="tagline">مستقبلك يبدأ بخطوة ذكية</div>
-
-    <div class="nav-container">
-        <a href="course.html" class="nav-btn btn-lessons">
-            <i class="fas fa-play-circle"></i>
-            <span>الدروس التعليمية</span>
-        </a>
-
-        <a href="exam.html" class="nav-btn btn-exam">
-            <i class="fas fa-file-signature"></i>
-            <span>الاختبار العملي</span>
-        </a>
-    </div>
-
-    <div class="copyright">© 2026 TALAL.TEK ACADEMY</div>
-</div>
-
-<a href="https://wa.me/966500000000" class="contact-link" target="_blank">
-    <i class="fab fa-whatsapp"></i>
-</a>
-
-</body>
-</html>
+    <div class="tagline" id="welcomeUser">مرحباً بك.. مستقبلك يبدأ هنا</div>
