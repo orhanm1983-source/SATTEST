@@ -1,76 +1,57 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK - الاختبار</title>
+    <title>TALAL.TEK - SAT Practice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #2c3e50; --sky: #3498db; --bg: #f8fafc; --green: #27ae60; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; direction: ltr; }
         .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        
-        /* شريط علوي لاسم الطالب */
-        .student-bar { display: flex; justify-content: space-between; align-items: center; background: #eef6fc; padding: 10px 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #d0e4f5; }
+        .student-bar { display: flex; justify-content: space-between; align-items: center; background: #eef6fc; padding: 12px 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #d0e4f5; }
         .student-name { color: var(--main); font-weight: bold; }
-        .home-link { text-decoration: none; color: var(--sky); font-size: 0.9rem; }
-
-        .question-box { margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; }
-        .question-text { font-size: 1.2rem; color: var(--main); margin-bottom: 15px; display: block; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .option { padding: 12px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .option:hover { background: #f0f7ff; border-color: var(--sky); }
-        .option.selected { background: var(--sky); color: white; border-color: var(--sky); }
-
-        .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; margin-top: 20px; }
-        
-        /* شاشة النتيجة */
-        #resultModal { display: none; text-align: center; padding: 40px; }
-        .score-circle { width: 120px; height: 120px; line-height: 120px; border-radius: 50%; background: var(--green); color: white; font-size: 2rem; margin: 20px auto; }
+        .home-link { text-decoration: none; color: var(--sky); font-weight: 600; }
+        .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
+        #resultArea { display: none; text-align: center; }
+        .score-circle { width: 100px; height: 100px; line-height: 100px; border-radius: 50%; background: var(--green); color: white; font-size: 1.5rem; margin: 20px auto; }
     </style>
 </head>
 <body>
-
-<div class="container" id="quizContainer">
+<div class="container" id="mainContainer">
     <div class="student-bar">
-        <div class="student-name">
-            <i class="fas fa-user-graduate"></i> الطالب: <span id="stuDisplayName">...</span>
-        </div>
-        <a href="home.html" class="home-link"><i class="fas fa-home"></i> الرئيسية</a>
-    </div>
-
-    <div id="quizArea">
-        <div class="question-box">
-            <span class="question-text">جاري تحميل الأسئلة...</span>
-        </div>
+        <div class="student-name"><i class="fas fa-user-graduate"></i> Student: <span id="stuNameDisplay">...</span></div>
+        <a href="home.html" class="home-link"><i class="fas fa-home"></i> Home</a>
     </div>
     
-    <button class="submit-btn" onclick="showResult()">إنهاء الاختبار وعرض النتيجة</button>
+    <div id="quizContent">
+        <h3 style="color: var(--main);">Digital SAT Practice Test</h3>
+        <p>Your questions will appear here from the modules...</p>
+        <div style="height: 200px; border: 1px dashed #ccc; margin: 20px 0; border-radius: 10px;"></div>
+    </div>
+
+    <button class="submit-btn" onclick="showResult()">Submit Test</button>
 </div>
 
-<div class="container" id="resultModal">
-    <h2 style="color: var(--main);">تم انتهاء الاختبار بنجاح!</h2>
-    <p id="congratsMsg" style="font-size: 1.2rem;"></p>
-    <div class="score-circle" id="finalScore">0</div>
-    <div style="margin-top: 30px;">
-        <a href="home.html" class="submit-btn" style="text-decoration: none; display: block;">العودة للقائمة الرئيسية</a>
-    </div>
+<div class="container" id="resultArea">
+    <h2>Test Completed!</h2>
+    <p id="congratsMsg"></p>
+    <div class="score-circle" id="scoreValue">0%</div>
+    <a href="home.html" style="text-decoration:none; color: var(--sky); font-weight:bold;">Back to Home</a>
 </div>
 
 <script>
-    // 1. عرض اسم الطالب فور الدخول
     document.addEventListener('DOMContentLoaded', () => {
-        const name = localStorage.getItem('student_name') || 'أيها البطل';
-        document.getElementById('stuDisplayName').innerText = name;
+        document.getElementById('stuNameDisplay').innerText = localStorage.getItem('student_name') || 'Student';
     });
 
-    // 2. دالة عرض النتيجة مع رسالة مخصصة
     function showResult() {
-        const name = localStorage.getItem('student_name') || 'بطل طلال تيك';
-        const score = 85; // هذه النتيجة مثال، يمكنك ربطها بحسابك الحقيقي للأسئلة
-        
-        document.getElementById('quizContainer').style.display = 'none';
-        document.getElementById('resultModal').style.display = 'block';
-        
-        document.getElementById('congratsMsg').innerText = `أحسنت يا ${name}! لقد بذلت مجهوداً رائعاً.`;
-        document.getElementById('finalScore').innerText = score
+        const name = localStorage.getItem('student_name') || 'Student';
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('congratsMsg').innerText = `Great job, ${name}! You have completed the module.`;
+        document.getElementById('scoreValue').innerText = "85%"; 
+    }
+</script>
+</body>
+</html>
