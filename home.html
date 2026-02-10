@@ -3,116 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK - بوابة التفوق</title>
+    <title>TALAL.TEK - الواجهة الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
-            --bg-color: #f8fafc; 
-            --main-blue: #2c3e50; 
-            --sky-blue: #3498db; 
+            --bg: #f8fafc; 
+            --main: #2c3e50; 
+            --sky: #3498db; 
             --white: #ffffff;
-            --text-gray: #64748b;
         }
         
         body { 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; 
-            background-color: var(--bg-color); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            margin: 0; background: var(--bg); 
+            display: flex; align-items: center; justify-content: center; 
             height: 100vh;
         }
 
-        .welcome-card {
+        .main-card {
             background: var(--white);
             padding: 50px 40px;
             border-radius: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.03);
             text-align: center;
             max-width: 450px;
-            width: 90%;
+            width: 85%;
             border: 1px solid rgba(255,255,255,0.7);
         }
 
-        .brand-name {
-            font-size: 2.8rem;
-            font-weight: 900;
-            color: var(--main-blue);
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-        }
+        .brand { font-size: 2.8rem; font-weight: 900; color: var(--main); margin-bottom: 5px; }
+        .brand span { color: var(--sky); }
 
-        .brand-name span { color: var(--sky-blue); }
-
-        .tagline {
-            font-size: 1.1rem;
-            color: var(--text-gray);
+        .welcome-msg {
+            font-size: 1.2rem;
+            color: #64748b;
             margin-bottom: 40px;
-            font-weight: 400;
-            min-height: 1.5em; /* لحجز مساحة الاسم قبل التحميل */
+            font-weight: 500;
         }
 
-        .nav-container {
+        .btn-grid {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
-        .nav-btn {
+        .btn {
             padding: 18px;
-            border-radius: 16px;
+            border-radius: 15px;
             text-decoration: none;
             font-weight: 600;
             font-size: 1.1rem;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-        }
-
-        .btn-lessons {
-            background-color: var(--main-blue);
-            color: white;
-            border: none;
-        }
-
-        .btn-exam {
-            background-color: transparent;
-            border: 2px solid var(--main-blue);
-            color: var(--main-blue);
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.1);
-        }
-
-        /* أيقونة واتساب */
-        .whatsapp-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: #25d366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-decoration: none;
             transition: 0.3s;
         }
 
-        .whatsapp-btn:hover { transform: scale(1.1); }
+        /* تنسيق الأزرار */
+        .btn-lessons { background: var(--main); color: white; border: none; }
+        .btn-exam { background: transparent; border: 2px solid var(--main); color: var(--main); }
+
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .footer { margin-top: 35px; font-size: 0.8rem; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
-<div class="welcome-card">
-    <div class="brand-name">TALAL<span>.TEK</span></div>
-    <div class="tagline" id="welcomeUser">مرحباً بك.. مستقبلك يبدأ هنا</div>
+<div class="main-card">
+    <div class="brand">TALAL<span>.TEK</span></div>
+    
+    <div class="welcome-msg" id="displayTitle">أهلاً بك أيها البطل</div>
+
+    <div class="btn-grid">
+        <a href="course.html" class="btn btn-lessons">
+            <i class="fas fa-play-circle"></i> الدروس التعليمية
+        </a>
+
+        <a href="exam.html" class="btn btn-exam">
+            <i class="fas fa-edit"></i> الاختبار العملي
+        </a>
+    </div>
+
+    <div class="footer">TALAL.TEK ACADEMY © 2026</div>
+</div>
+
+<script>
+    // كود جلب الاسم
+    window.onload = function() {
+        const name = localStorage.getItem('student_name');
+        if (name) {
+            document.getElementById('displayTitle').innerText = `أهلاً بك يا ${name}، اختر طريقك اليوم`;
+        }
+    };
+</script>
+
+</body>
+</html>
