@@ -1,23 +1,35 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8"><title>TALAL.TEK - دخول</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALAL.TEK - Login</title>
     <style>
-        body { font-family: sans-serif; background: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 350px; }
-        input { width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        :root { --blue: #2c3e50; --sky: #3498db; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center; }
+        .brand { font-size: 2.2rem; font-weight: 800; color: var(--blue); margin-bottom: 5px; }
+        .brand span { color: var(--sky); }
+        .welcome-text { color: #64748b; margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; font-size: 1rem; outline: none; transition: 0.3s; text-align: center; }
+        input:focus { border-color: var(--sky); }
+        .btn-login { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--blue); color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-login:hover { background: var(--sky); transform: translateY(-2px); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>TALAL<span>.TEK</span></h2>
-        <input type="text" id="name" placeholder="أدخل اسمك">
-        <button onclick="login()">دخول</button>
+    <div class="login-card">
+        <div class="brand">TALAL<span>.TEK</span></div>
+        <p class="welcome-text">Enter your name to start</p>
+        <form onsubmit="doLogin(event)">
+            <input type="text" id="stuName" placeholder="Full Name" required>
+            <button type="submit" class="btn-login">Login</button>
+        </form>
     </div>
     <script>
-        function login() {
-            localStorage.setItem('student_name', document.getElementById('name').value);
+        function doLogin(e) {
+            e.preventDefault();
+            localStorage.setItem('student_name', document.getElementById('stuName').value);
             window.location.href = "home.html";
         }
     </script>
