@@ -7,50 +7,79 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #2c3e50; --sky: #3498db; --bg: #f8fafc; --green: #27ae60; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; direction: ltr; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .student-bar { display: flex; justify-content: space-between; align-items: center; background: #eef6fc; padding: 12px 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #d0e4f5; }
-        .student-name { color: var(--main); font-weight: bold; }
-        .home-link { text-decoration: none; color: var(--sky); font-weight: 600; }
-        .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
+        .student-bar { display: flex; justify-content: space-between; align-items: center; background: #eef6fc; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #d0e4f5; }
+        .question-block { margin-bottom: 35px; padding: 25px; background: #fff; border-radius: 15px; border: 1px solid #e2e8f0; text-align: left; }
+        .opt-label { display: flex; align-items: center; gap: 10px; padding: 15px; border: 1px solid #edf2f7; border-radius: 10px; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .opt-label:hover { background: #f8fafc; }
+        .submit-btn { width: 100%; padding: 18px; background: var(--green); color: white; border: none; border-radius: 12px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
         #resultArea { display: none; text-align: center; }
-        .score-circle { width: 100px; height: 100px; line-height: 100px; border-radius: 50%; background: var(--green); color: white; font-size: 1.5rem; margin: 20px auto; }
+        .score-circle { width: 120px; height: 120px; line-height: 120px; border-radius: 50%; background: var(--green); color: white; font-size: 2rem; margin: 20px auto; font-weight: bold; }
     </style>
 </head>
 <body>
+
 <div class="container" id="mainContainer">
     <div class="student-bar">
-        <div class="student-name"><i class="fas fa-user-graduate"></i> Student: <span id="stuNameDisplay">...</span></div>
-        <a href="home.html" class="home-link"><i class="fas fa-home"></i> Home</a>
+        <div style="font-weight: bold; color: var(--main);"><i class="fas fa-user-graduate"></i> Student: <span id="stuNameDisplay">...</span></div>
+        <a href="home.html" style="text-decoration:none; color: var(--sky); font-weight:bold;"><i class="fas fa-home"></i> Home</a>
     </div>
     
     <div id="quizContent">
-        <h3 style="color: var(--main);">Digital SAT Practice Test</h3>
-        <p>Your questions will appear here from the modules...</p>
-        <div style="height: 200px; border: 1px dashed #ccc; margin: 20px 0; border-radius: 10px;"></div>
-    </div>
+        </div>
 
-    <button class="submit-btn" onclick="showResult()">Submit Test</button>
+    <button class="submit-btn" onclick="showResult()">Submit All Answers</button>
 </div>
 
 <div class="container" id="resultArea">
-    <h2>Test Completed!</h2>
-    <p id="congratsMsg"></p>
+    <h2 style="color: var(--main);">Test Result</h2>
+    <p id="congratsMsg" style="font-size: 1.2rem; color: #64748b;"></p>
     <div class="score-circle" id="scoreValue">0%</div>
-    <a href="home.html" style="text-decoration:none; color: var(--sky); font-weight:bold;">Back to Home</a>
+    <a href="home.html" style="display:block; margin-top:20px; text-decoration:none; color: var(--sky); font-weight:bold;">Return to Dashboard</a>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    window.onload = function() {
         document.getElementById('stuNameDisplay').innerText = localStorage.getItem('student_name') || 'Student';
-    });
+        const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        const quizContent = document.getElementById('quizContent');
+
+        if(questions.length > 0) {
+            questions.forEach((q, index) => {
+                let imageHtml = q.img ? `<img src="${q.img}" style="max-width:100%; height:auto; border-radius:10px; margin: 15px 0; border: 1px solid #eee;">` : "";
+                quizContent.innerHTML += `
+                    <div class="question-block">
+                        <p style="font-weight: 600; font-size: 1.1rem;">Q${index+1}: ${q.text}</p>
+                        ${imageHtml}
+                        <div style="margin-top: 15px;">
+                            ${['A', 'B', 'C', 'D'].map((letter, i) => `
+                                <label class="opt-label">
+                                    <input type="radio" name="q${index}" value="${letter}">
+                                    <span><strong>${letter})</strong> ${q.options[i]}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            });
+        } else {
+            quizContent.innerHTML = "<p style='padding:40px; color:#94a3b8;'>No questions available. Please add some from Admin Panel.</p>";
+        }
+    };
 
     function showResult() {
-        const name = localStorage.getItem('student_name') || 'Student';
+        const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        if (questions.length === 0) return;
+        let score = 0;
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected && selected.value === q.correct) score++;
+        });
+        const finalPercent = Math.round((score / questions.length) * 100);
         document.getElementById('mainContainer').style.display = 'none';
         document.getElementById('resultArea').style.display = 'block';
-        document.getElementById('congratsMsg').innerText = `Great job, ${name}! You have completed the module.`;
-        document.getElementById('scoreValue').innerText = "85%"; 
+        document.getElementById('congratsMsg').innerText = `Great job, ${localStorage.getItem('student_name')}!`;
+        document.getElementById('scoreValue').innerText = finalPercent + "%";
     }
 </script>
 </body>
