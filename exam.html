@@ -1,71 +1,166 @@
-<div class="calculator-side">
-    <div class="calc-wrapper">
-        <h4 style="color:white; margin: 0 0 10px 0; text-align:center; font-size: 0.9rem;">Scientific Practice Calc</h4>
-        <input type="text" id="display" class="calc-display" readonly placeholder="0">
-        <div class="calc-buttons">
-            <button class="calc-btn btn-op" onclick="clearCalc()">AC</button>
-            <button class="calc-btn btn-op" onclick="append('(')">(</button>
-            <button class="calc-btn btn-op" onclick="append(')')">)</button>
-            <button class="calc-btn btn-op" onclick="backspace()">DEL</button>
-            
-            <button class="calc-btn btn-op" onclick="append('**2')">x²</button>
-            <button class="calc-btn btn-op" onclick="append('**')">^</button>
-            <button class="calc-btn btn-op" onclick="calculateRoot()">√</button>
-            <button class="calc-btn btn-op" onclick="append('/')">÷</button>
-            
-            <button class="calc-btn btn-num" onclick="append('7')">7</button>
-            <button class="calc-btn btn-num" onclick="append('8')">8</button>
-            <button class="calc-btn btn-num" onclick="append('9')">9</button>
-            <button class="calc-btn btn-op" onclick="append('*')">×</button>
-            
-            <button class="calc-btn btn-num" onclick="append('4')">4</button>
-            <button class="calc-btn btn-num" onclick="append('5')">5</button>
-            <button class="calc-btn btn-num" onclick="append('6')">6</button>
-            <button class="calc-btn btn-op" onclick="append('-')">-</button>
-            
-            <button class="calc-btn btn-num" onclick="append('1')">1</button>
-            <button class="calc-btn btn-num" onclick="append('2')">2</button>
-            <button class="calc-btn btn-num" onclick="append('3')">3</button>
-            <button class="calc-btn btn-op" onclick="append('+')">+</button>
-            
-            <button class="calc-btn btn-num" onclick="append('0')">0</button>
-            <button class="calc-btn btn-num" onclick="append('.')">.</button>
-            <button class="calc-btn btn-eq" onclick="calculate()">=</button>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Exam - TALAL.TEK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        
+        /* الهيدر والمؤقت */
+        .exam-header { 
+            background: white; padding: 15px 30px; position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .timer-box { background: #fee2e2; color: #ef4444; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 1.2rem; }
+
+        .main-layout { display: flex; max-width: 1200px; margin: 20px auto; gap: 30px; padding: 0 20px; align-items: flex-start; }
+        
+        /* قسم الأسئلة */
+        .questions-side { flex: 2; }
+        .q-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .q-text { font-size: 1.1rem; color: var(--dark); margin-bottom: 20px; line-height: 1.6; }
+        .option-item { display: flex; align-items: center; padding: 15px; border: 2px solid #edf2f7; border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
+        .option-item:hover { background: #f0fdf4; border-color: var(--primary); }
+        .option-item input { margin-right: 15px; transform: scale(1.3); }
+
+        /* قسم الحاسبة العلمية */
+        .calculator-side { flex: 1; position: sticky; top: 100px; min-width: 300px; }
+        .calc-wrapper { background: #2d3436; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .calc-display { width: 100%; background: #dfe6e9; border: none; padding: 15px; margin-bottom: 15px; border-radius: 10px; text-align: right; font-size: 1.4rem; font-family: monospace; box-sizing: border-box; }
+        .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .calc-btn { padding: 12px 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.1s; }
+        .calc-btn:active { transform: scale(0.95); }
+        .btn-op { background: #636e72; color: white; }
+        .btn-num { background: #ecf0f1; color: #2d3436; }
+        .btn-eq { background: var(--primary); color: white; grid-column: span 2; }
+        .btn-ac { background: #e74c3c; color: white; }
+
+        .btn-finish { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .calculator-side { position: relative; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="exam-header">
+    <div style="font-weight: bold; color: var(--dark); font-size: 1.2rem;">
+        <i class="fas fa-graduation-cap" style="color:var(--primary)"></i> TALAL.TEK FINAL EXAM
+    </div>
+    <div class="timer-box" id="timerDisplay">60:00</div>
+</div>
+
+<div class="main-layout">
+    <div class="questions-side">
+        <div id="examQuestions">
+            </div>
+        <button class="btn-finish" onclick="submitExam()">Submit My Answers</button>
+    </div>
+
+    <div class="calculator-side">
+        <div class="calc-wrapper">
+            <input type="text" id="display" class="calc-display" readonly placeholder="0">
+            <div class="calc-buttons">
+                <button class="calc-btn btn-ac" onclick="clearCalc()">AC</button>
+                <button class="calc-btn btn-op" onclick="append('(')">(</button>
+                <button class="calc-btn btn-op" onclick="append(')')">)</button>
+                <button class="calc-btn btn-op" onclick="backspace()">DEL</button>
+                
+                <button class="calc-btn btn-op" onclick="append('**2')">x²</button>
+                <button class="calc-btn btn-op" onclick="append('**')">^</button>
+                <button class="calc-btn btn-op" onclick="calculateRoot()">√</button>
+                <button class="calc-btn btn-op" onclick="append('/')">÷</button>
+                
+                <button class="calc-btn btn-num" onclick="append('7')">7</button>
+                <button class="calc-btn btn-num" onclick="append('8')">8</button>
+                <button class="calc-btn btn-num" onclick="append('9')">9</button>
+                <button class="calc-btn btn-op" onclick="append('*')">×</button>
+                
+                <button class="calc-btn btn-num" onclick="append('4')">4</button>
+                <button class="calc-btn btn-num" onclick="append('5')">5</button>
+                <button class="calc-btn btn-num" onclick="append('6')">6</button>
+                <button class="calc-btn btn-op" onclick="append('-')">-</button>
+                
+                <button class="calc-btn btn-num" onclick="append('1')">1</button>
+                <button class="calc-btn btn-num" onclick="append('2')">2</button>
+                <button class="calc-btn btn-num" onclick="append('3')">3</button>
+                <button class="calc-btn btn-op" onclick="append('+')">+</button>
+                
+                <button class="calc-btn btn-num" onclick="append('0')">0</button>
+                <button class="calc-btn btn-num" onclick="append('.')">.</button>
+                <button class="calc-btn btn-eq" onclick="calculate()">=</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // الدوال البرمجية للحاسبة العلمية
+    // 1. منطق الحاسبة
     const display = document.getElementById('display');
-    
-    function append(val) {
-        display.value += val;
-    }
-
-    function clearCalc() {
-        display.value = '';
-    }
-
-    function backspace() {
-        display.value = display.value.slice(0, -1);
-    }
-
+    function append(val) { display.value += val; }
+    function clearCalc() { display.value = ''; }
+    function backspace() { display.value = display.value.slice(0, -1); }
     function calculate() {
-        try {
-            // استخدام eval بحذر للعمليات الحسابية
-            display.value = eval(display.value);
-        } catch (e) {
-            display.value = 'Error';
-            setTimeout(clearCalc, 1500);
-        }
+        try { display.value = eval(display.value.replace('×', '*').replace('÷', '/')); } 
+        catch { display.value = 'Error'; setTimeout(clearCalc, 1000); }
+    }
+    function calculateRoot() {
+        try { display.value = Math.sqrt(eval(display.value)); } 
+        catch { display.value = 'Error'; }
     }
 
-    function calculateRoot() {
-        try {
-            display.value = Math.sqrt(eval(display.value));
-        } catch (e) {
-            display.value = 'Error';
+    // 2. منطق المؤقت
+    let time = 60 * 60;
+    const timerEl = document.getElementById('timerDisplay');
+    setInterval(() => {
+        let m = Math.floor(time / 60);
+        let s = time % 60;
+        timerEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if(time > 0) time--;
+    }, 1000);
+
+    // 3. تحميل الأسئلة من الذاكرة
+    function loadFinalQuestions() {
+        const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        const container = document.getElementById('examQuestions');
+        
+        if(questions.length === 0) {
+            container.innerHTML = "<h2>No questions found. Please add questions in Admin first.</h2>";
+            return;
         }
+
+        container.innerHTML = questions.map((q, i) => `
+            <div class="q-card">
+                <div class="q-text"><b>Q${i+1}:</b> ${q.text}</div>
+                ${q.img ? `<img src="${q.img}" style="max-width:100%; margin-bottom:15px; border-radius:10px;">` : ''}
+                <div class="options">
+                    ${['A','B','C','D'].map((opt, idx) => `
+                        <label class="option-item">
+                            <input type="radio" name="final_q${i}" value="${opt}">
+                            <span>${opt}) ${q.options[idx]}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+        
+        if(window.MathJax) MathJax.typesetPromise();
     }
+
+    function submitExam() {
+        alert("Exam submitted successfully! Well done.");
+        window.location.href = 'home.html';
+    }
+
+    window.onload = loadFinalQuestions;
 </script>
+
+</body>
+</html>
