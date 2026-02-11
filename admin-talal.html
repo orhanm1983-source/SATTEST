@@ -40,7 +40,7 @@
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header"><h2 style="color:var(--primary)">TALAL.TEK</h2><small>Control Center v2.6</small></div>
+    <div class="sidebar-header"><h2 style="color:var(--primary)">TALAL.TEK</h2><small>Control Center v2.7</small></div>
     <div class="nav-item active" onclick="showSection('videoSec')"><i class="fas fa-video"></i> Lessons & Videos</div>
     <div class="nav-item" onclick="showSection('unitQSec')"><i class="fas fa-edit"></i> Unit Quizzes</div>
     <div class="nav-item" onclick="showSection('finalExamSec')"><i class="fas fa-file-invoice"></i> Final Exams</div>
@@ -143,17 +143,32 @@
     function insertMath(id, type) {
         const area = document.getElementById(id);
         let tag = (type==='sqrt') ? "$\\sqrt{x}$" : (type==='frac') ? "$\\frac{a}{b}$" : (type==='pow') ? "$x^{2}$" : "**Text**";
-        area.value += tag;
+        
+        // إدراج النص في مكان المؤشر بدلاً من الإضافة في النهاية فقط
+        const start = area.selectionStart;
+        const end = area.selectionEnd;
+        area.value = area.value.substring(0, start) + tag + area.value.substring(end);
+        
+        area.focus();
         updatePreview(id.charAt(0));
     }
 
     function updatePreview(p) {
         const txt = document.getElementById(p+'Text').value;
         const img = document.getElementById(p+'Img').value;
-        document.getElementById(p+'MathPreview').innerHTML = txt.replace(/\n/g, '<br>');
+        const mathPreview = document.getElementById(p+'MathPreview');
         const imgP = document.getElementById(p+'ImgPreview');
+
+        // تحديث النص أولاً
+        mathPreview.innerHTML = txt.replace(/\n/g, '<br>');
+
+        // تحديث الصورة
         if(img) { imgP.src = img; imgP.style.display = 'block'; } else { imgP.style.display = 'none'; }
-        if (window.MathJax) MathJax.typesetPromise();
+
+        // إعادة تفعيل MathJax على عنصر المعاينة فقط لضمان السرعة
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([mathPreview]).catch(err => console.log(err));
+        }
     }
 
     function toggleInputs(p) {
