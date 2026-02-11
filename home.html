@@ -1,27 +1,69 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8"><title>TALAL.TEK - الرئيسية</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALAL.TEK - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; width: 400px; }
-        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; margin: 10px 0; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; }
-        .btn-blue { background: #2c3e50; color: white; }
-        .btn-outline { border: 2px solid #2c3e50; color: #2c3e50; }
+        :root { --primary: #3498db; --secondary: #2ecc71; --dark: #1e293b; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        .container { background: white; width: 90%; max-width: 500px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; }
+        
+        .logo-area { background: var(--primary); width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 30px; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3); }
+        
+        h1 { color: var(--dark); margin-bottom: 10px; font-size: 28px; }
+        p { color: #64748b; margin-bottom: 30px; font-size: 16px; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        .menu-card { 
+            display: flex; align-items: center; gap: 15px; background: #fff; padding: 20px; border-radius: 12px; 
+            text-decoration: none; color: var(--dark); border: 1px solid #e2e8f0; transition: 0.3s; font-weight: 600;
+        }
+        
+        .menu-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .menu-card i { font-size: 24px; width: 40px; }
+        .menu-card.lessons i { color: var(--primary); }
+        .menu-card.exams i { color: var(--secondary); }
+        
+        .admin-link { margin-top: 30px; display: inline-block; color: #94a3b8; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .admin-link:hover { color: var(--primary); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1 id="welcome">أهلاً بك</h1>
-        <div class="btn-group">
-            <a href="course.html" class="btn btn-blue"><i class="fas fa-video"></i> الدروس التعليمية</a>
-            <a href="exam.html" class="btn btn-outline"><i class="fas fa-edit"></i> الاختبار العملي</a>
-        </div>
+
+<div class="container">
+    <div class="logo-area">
+        <i class="fas fa-graduation-cap"></i>
     </div>
-    <script>
-        const name = localStorage.getItem('student_name') || "أيها البطل";
-        document.getElementById('welcome').innerText = "أهلاً بك يا " + name;
-    </script>
+    
+    <h1>Welcome, Orhan!</h1>
+    <p>Select your destination to continue learning.</p>
+
+    <div class="menu-grid">
+        <a href="course.html" class="menu-card lessons">
+            <i class="fas fa-play-circle"></i>
+            <div style="text-align: left;">
+                <span style="display: block;">Video Lessons</span>
+                <small style="color: #94a3b8; font-weight: normal;">Watch and learn math concepts</small>
+            </div>
+        </a>
+
+        <a href="exam.html" class="menu-card exams">
+            <i class="fas fa-file-alt"></i>
+            <div style="text-align: left;">
+                <span style="display: block;">Practice Exams</span>
+                <small style="color: #94a3b8; font-weight: normal;">Test your skills with real SAT questions</small>
+            </div>
+        </a>
+    </div>
+
+    <a href="admin-talal.html" class="admin-link">
+        <i class="fas fa-user-shield"></i> Admin Dashboard
+    </a>
+</div>
+
 </body>
 </html>
