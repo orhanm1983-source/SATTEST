@@ -6,7 +6,17 @@
     <title>TALAL.TEK - SAT Practice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                enableMenu: false
+            }
+        };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
@@ -22,7 +32,6 @@
 
         .calc-btn { background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
-        /* نافذة الآلة الحاسبة المحسنة */
         #calcModal {
             display: none; position: fixed; top: 100px; right: 50px;
             width: 450px; height: 500px; background: white; border-radius: 15px;
@@ -104,65 +113,29 @@
         const container = document.getElementById('quizContent');
         if(!questionsData.length) return container.innerHTML = "No questions found.";
 
+        let fullHtml = ""; // تجميع الكود في متغير واحد أولاً
         questionsData.forEach((q, i) => {
-            const div = document.createElement('div');
-            div.className = 'question-block';
-            div.innerHTML = `
-                <p style="color:var(--primary); font-weight:bold;">Question ${i+1}</p>
-                <div>${q.text}</div>
-                ${q.img ? `<img src="${q.img}" style="max-width:100%; margin-top:10px;">` : ''}
-                <div style="margin-top:15px;">
-                    ${q.type === 'mcq' ? 
-                        ['A','B','C','D'].map((l, idx) => `
-                            <label class="opt-label" id="label-${i}-${l}">
-                                <input type="radio" name="q${i}" value="${l}"> ${l}) ${q.options[idx]}
-                            </label>`).join('') :
-                        `<input type="text" class="grid-in-box" id="grid-${i}" placeholder="Enter answer...">`
-                    }
+            fullHtml += `
+                <div class="question-block">
+                    <p style="color:var(--primary); font-weight:bold;">Question ${i+1}</p>
+                    <div class="math-content">${q.text}</div>
+                    ${q.img ? `<img src="${q.img}" style="max-width:100%; margin-top:10px;">` : ''}
+                    <div style="margin-top:15px;">
+                        ${q.type === 'mcq' ? 
+                            ['A','B','C','D'].map((l, idx) => `
+                                <label class="opt-label" id="label-${i}-${l}">
+                                    <input type="radio" name="q${i}" value="${l}"> ${l}) ${q.options[idx]}
+                                </label>`).join('') :
+                            `<input type="text" class="grid-in-box" id="grid-${i}" placeholder="Enter answer...">`
+                        }
+                    </div>
                 </div>
             `;
-            container.appendChild(div);
         });
-        if(window.MathJax) MathJax.typeset();
-    }
+        
+        container.innerHTML = fullHtml;
 
-    function processQuiz() {
-        let score = 0;
-        questionsData.forEach((q, i) => {
-            let sAns = q.type === 'mcq' ? (document.querySelector(`input[name="q${i}"]:checked`)?.value || "") : document.getElementById(`grid-${i}`).value.trim();
-            let isCorrect = sAns.toLowerCase() === q.correct.toLowerCase();
-            
-            if(q.type === 'mcq') {
-                document.getElementById(`label-${i}-${q.correct}`).classList.add('correct-opt');
-                if(sAns && !isCorrect) document.getElementById(`label-${i}-${sAns}`).classList.add('wrong-opt');
-            } else {
-                document.getElementById(`grid-${i}`).classList.add(isCorrect ? 'correct-opt' : 'wrong-opt');
-            }
-            if(isCorrect) score++;
-        });
-
-        document.getElementById('quizWrapper').style.display = 'none';
-        document.getElementById('resultArea').style.display = 'block';
-        document.getElementById('scoreValue').innerText = Math.round((score/questionsData.length)*100) + "%";
-        document.getElementById('detailedScore').innerText = `Result: ${score} / ${questionsData.length}`;
-    }
-
-    // دالة جعل النافذة قابلة للسحب (Drag)
-    function makeDraggable(el) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        document.getElementById("calcHeader").onmousedown = (e) => {
-            e.preventDefault();
-            pos3 = e.clientX; pos4 = e.clientY;
-            document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
-            document.onmousemove = (e) => {
-                e.preventDefault();
-                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
-                pos3 = e.clientX; pos4 = e.clientY;
-                el.style.top = (el.offsetTop - pos2) + "px";
-                el.style.left = (el.offsetLeft - pos1) + "px";
-            };
-        };
-    }
-</script>
-</body>
-</html>
+        // إجبار محرك الرياضيات على العمل فوراً
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise().then(() => {
+                console.log("Math rendered successfully
