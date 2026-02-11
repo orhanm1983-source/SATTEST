@@ -12,52 +12,35 @@
     <style>
         :root { --primary: #3498db; --secondary: #2ecc71; --accent: #9b59b6; --money: #f39c12; --danger: #e74c3c; --dark: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
-        
-        /* Sidebar */
         .sidebar { width: 260px; background: var(--dark); color: white; height: 100vh; position: fixed; padding: 20px 0; }
         .sidebar-header { padding: 0 20px 30px; border-bottom: 1px solid #334155; margin-bottom: 20px; text-align: center; }
         .nav-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: #94a3b8; }
         .nav-item:hover, .nav-item.active { background: #334155; color: white; border-right: 4px solid var(--primary); }
-
-        /* Content Area */
         .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 280px); box-sizing: border-box; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        
         h3 { margin-top: 0; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; }
-
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #475569; font-size: 0.9rem; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
-        
-        /* Toolbar */
         .toolbar { background: #f8fafc; border: 1px solid #cbd5e1; border-bottom: none; padding: 8px; border-top-left-radius: 10px; border-top-right-radius: 10px; display: flex; gap: 8px; }
         .tool-btn { background: white; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
         .tool-btn:hover { background: var(--primary); color: white; }
-
-        /* Preview Box */
-        .preview-box { background: #fffbeb; border: 1px dashed #f59e0b; padding: 15px; border-radius: 10px; margin-top: 10px; }
-
+        .preview-box { background: #fffbeb; border: 1px dashed #f59e0b; padding: 15px; border-radius: 10px; margin-top: 10px; min-height: 40px; }
         .btn { border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; width: 100%; }
         .btn-blue { background: var(--primary); }
         .btn-green { background: var(--secondary); }
         .btn-purple { background: var(--accent); }
-        
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .data-table th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; }
         .data-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        
-        .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header">
-        <h2 style="color:var(--primary)">TALAL.TEK</h2>
-        <small>Control Center v2.5</small>
-    </div>
+    <div class="sidebar-header"><h2 style="color:var(--primary)">TALAL.TEK</h2><small>Control Center v2.6</small></div>
     <div class="nav-item active" onclick="showSection('videoSec')"><i class="fas fa-video"></i> Lessons & Videos</div>
     <div class="nav-item" onclick="showSection('unitQSec')"><i class="fas fa-edit"></i> Unit Quizzes</div>
     <div class="nav-item" onclick="showSection('finalExamSec')"><i class="fas fa-file-invoice"></i> Final Exams</div>
@@ -68,7 +51,7 @@
 <div class="main-content">
 
     <div id="videoSec" class="card section">
-        <h3><i class="fas fa-plus-circle"></i> Add New Video Lesson</h3>
+        <h3><i class="fas fa-plus-circle"></i> Add Video Lesson</h3>
         <div class="form-grid">
             <div class="form-group"><label>Unit Number</label><input type="text" id="vUnit" placeholder="Unit 1"></div>
             <div class="form-group"><label>Lesson Title</label><input type="text" id="vTitle" placeholder="Lesson Name"></div>
@@ -84,7 +67,6 @@
             <div class="form-group"><label>Type</label><select id="uType" onchange="toggleInputs('u')"><option value="mcq">MCQ</option><option value="gridin">Grid-in</option></select></div>
         </div>
         <div class="form-group"><label>Quiz Time (Minutes)</label><input type="number" id="uTime" value="20"></div>
-
         <div class="form-group">
             <label>Question Content</label>
             <div class="toolbar">
@@ -93,43 +75,59 @@
                 <button class="tool-btn" onclick="insertMath('uText', 'pow')">x²</button>
                 <button class="tool-btn" onclick="insertMath('uText', 'bold')">B</button>
             </div>
-            <textarea id="uText" rows="4" oninput="updatePreview()" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
+            <textarea id="uText" rows="4" oninput="updatePreview('u')" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
         </div>
-
-        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview()" placeholder="URL here"></div>
-
+        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview('u')" placeholder="URL here"></div>
         <div class="preview-box">
-            <small style="color:#f59e0b">Preview Area:</small>
-            <div id="mathPreview" style="margin-top:10px;"></div>
-            <img id="imgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
+            <small style="color:#f59e0b">Preview:</small>
+            <div id="uMathPreview"></div>
+            <img id="uImgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
         </div>
-
         <div id="uMcqArea" class="form-grid" style="margin-top:15px;">
             <input type="text" id="uA" placeholder="Option A"><input type="text" id="uB" placeholder="Option B">
             <input type="text" id="uC" placeholder="Option C"><input type="text" id="uD" placeholder="Option D">
         </div>
         <div id="uGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="uCorrect"></div>
-        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Question</button>
+        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Unit Question</button>
     </div>
 
     <div id="finalExamSec" class="card section hidden">
-        <h3>Final Exam (Future Edit)</h3>
-        <p>This section is reserved for Final Exams bank.</p>
+        <h3><i class="fas fa-trophy"></i> Final Mock Exam Builder</h3>
+        <div class="form-grid">
+            <div class="form-group"><label>Exam Name</label><input type="text" id="fSet" placeholder="Practice Test 1"></div>
+            <div class="form-group"><label>Target Module</label><select id="fModule"><option value="M1">Module 1</option><option value="M2">Module 2</option></select></div>
+        </div>
+        <div class="form-grid">
+            <div class="form-group"><label>Type</label><select id="fType" onchange="toggleInputs('f')"><option value="mcq">MCQ</option><option value="gridin">Grid-in</option></select></div>
+            <div class="form-group"><label>Exam Time (Min)</label><input type="number" id="fTime" value="64"></div>
+        </div>
+        <div class="form-group">
+            <label>Question Content</label>
+            <div class="toolbar">
+                <button class="tool-btn" onclick="insertMath('fText', 'sqrt')">√x</button>
+                <button class="tool-btn" onclick="insertMath('fText', 'frac')">a/b</button>
+                <button class="tool-btn" onclick="insertMath('fText', 'pow')">x²</button>
+                <button class="tool-btn" onclick="insertMath('fText', 'bold')">B</button>
+            </div>
+            <textarea id="fText" rows="4" oninput="updatePreview('f')" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
+        </div>
+        <div class="form-group"><label>Image Link</label><input type="text" id="fImg" oninput="updatePreview('f')" placeholder="URL here"></div>
+        <div class="preview-box" style="background: #f0fdf4; border-color: #22c55e;">
+            <small style="color:#15803d">Final Preview:</small>
+            <div id="fMathPreview"></div>
+            <img id="fImgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
+        </div>
+        <div id="fMcqArea" class="form-grid" style="margin-top:15px;">
+            <input type="text" id="fA" placeholder="Option A"><input type="text" id="fB" placeholder="Option B">
+            <input type="text" id="fC" placeholder="Option C"><input type="text" id="fD" placeholder="Option D">
+        </div>
+        <div id="fGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="fCorrect"></div>
+        <button class="btn btn-purple" onclick="saveItem('finalQ')">Save Final Question</button>
     </div>
 
-    <div id="studentSec" class="card section hidden">
-        <h3>Students List</h3>
-        <table class="data-table"><tbody id="studentTable"></tbody></table>
-    </div>
-
-    <div id="financeSec" class="card section hidden">
-        <div class="financial-placeholder"><i class="fas fa-lock"></i><h2>Financial Module</h2><p>Locked for now.</p></div>
-    </div>
-
-    <div class="card" id="inventoryCard">
-        <h3>Inventory</h3>
-        <table class="data-table"><tbody id="contentTable"></tbody></table>
-    </div>
+    <div id="studentSec" class="card section hidden"><h3>Students</h3><table class="data-table"><tbody id="studentTable"></tbody></table></div>
+    <div id="financeSec" class="card section hidden"><div class="financial-placeholder"><i class="fas fa-lock"></i><h2>Financial</h2></div></div>
+    <div class="card" id="inventoryCard"><h3>Content Inventory</h3><table class="data-table"><tbody id="contentTable"></tbody></table></div>
 </div>
 
 <script>
@@ -138,7 +136,7 @@
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('inventoryCard').style.display = (id==='studentSec' || id==='financeSec') ? 'none' : 'block';
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(event.currentTarget.classList) event.currentTarget.classList.add('active');
+        if(event.currentTarget) event.currentTarget.classList.add('active');
         if(id === 'studentSec') renderStudents();
     }
 
@@ -146,14 +144,14 @@
         const area = document.getElementById(id);
         let tag = (type==='sqrt') ? "$\\sqrt{x}$" : (type==='frac') ? "$\\frac{a}{b}$" : (type==='pow') ? "$x^{2}$" : "**Text**";
         area.value += tag;
-        updatePreview();
+        updatePreview(id.charAt(0));
     }
 
-    function updatePreview() {
-        const txt = document.getElementById('uText').value;
-        const img = document.getElementById('uImg').value;
-        document.getElementById('mathPreview').innerHTML = txt.replace(/\n/g, '<br>');
-        const imgP = document.getElementById('imgPreview');
+    function updatePreview(p) {
+        const txt = document.getElementById(p+'Text').value;
+        const img = document.getElementById(p+'Img').value;
+        document.getElementById(p+'MathPreview').innerHTML = txt.replace(/\n/g, '<br>');
+        const imgP = document.getElementById(p+'ImgPreview');
         if(img) { imgP.src = img; imgP.style.display = 'block'; } else { imgP.style.display = 'none'; }
         if (window.MathJax) MathJax.typesetPromise();
     }
@@ -167,18 +165,19 @@
     function saveItem(type) {
         let key = (type === 'video') ? 'added_lessons' : (type === 'unitQ' ? 'added_questions' : 'final_exam_questions');
         let data = { id: Date.now(), type: type };
-        
+        const p = (type === 'unitQ') ? 'u' : 'f';
+
         if(type === 'video') {
             data.unitNum = document.getElementById('vUnit').value;
             data.title = document.getElementById('vTitle').value;
             data.videoURL = document.getElementById('vUrl').value;
         } else {
-            const p = (type === 'unitQ') ? 'u' : 'f';
             data.qType = document.getElementById(p+'Type').value;
             data.text = document.getElementById(p+'Text').value;
-            data.img = (type === 'unitQ') ? document.getElementById('uImg').value : '';
-            data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : '';
-            data.examTime = (type === 'unitQ') ? document.getElementById('uTime').value : 60;
+            data.img = document.getElementById(p+'Img').value;
+            data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : document.getElementById('fSet').value;
+            data.module = (type === 'finalQ') ? document.getElementById('fModule').value : 'N/A';
+            data.examTime = document.getElementById(p+'Time').value;
             if(data.qType === 'mcq') {
                 data.options = [document.getElementById(p+'A').value, document.getElementById(p+'B').value, document.getElementById(p+'C').value, document.getElementById(p+'D').value];
             } else { data.correct = document.getElementById(p+'Correct').value; }
@@ -187,14 +186,14 @@
         let db = JSON.parse(localStorage.getItem(key) || '[]');
         db.push(data);
         localStorage.setItem(key, JSON.stringify(db));
-        alert("Saved!"); renderContent();
+        alert("Saved Successfully!"); renderContent();
     }
 
     function renderContent() {
         const body = document.getElementById('contentTable'); body.innerHTML = '';
         ['added_lessons', 'added_questions', 'final_exam_questions'].forEach(key => {
             JSON.parse(localStorage.getItem(key) || '[]').forEach(item => {
-                body.innerHTML += `<tr><td>${item.type}</td><td>${item.unitNum || item.unit}</td><td>${(item.title || item.text).substring(0,20)}</td><td><button onclick="deleteItem('${key}', ${item.id})">Delete</button></td></tr>`;
+                body.innerHTML += `<tr><td><span class="badge">${item.type}</span></td><td>${item.unitNum || item.unit} ${item.module ? '- '+item.module : ''}</td><td>${(item.title || item.text).substring(0,25)}...</td><td><button onclick="deleteItem('${key}', ${item.id})"><i class="fas fa-trash"></i></button></td></tr>`;
             });
         });
     }
