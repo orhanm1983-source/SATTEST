@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Admin - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         :root { --primary: #3498db; --secondary: #2ecc71; --accent: #9b59b6; --money: #f39c12; --danger: #e74c3c; --dark: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
@@ -26,22 +30,25 @@
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #475569; font-size: 0.9rem; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
         
-        .btn { border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; }
+        /* Toolbar */
+        .toolbar { background: #f8fafc; border: 1px solid #cbd5e1; border-bottom: none; padding: 8px; border-top-left-radius: 10px; border-top-right-radius: 10px; display: flex; gap: 8px; }
+        .tool-btn { background: white; border: 1px solid #cbd5e1; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+        .tool-btn:hover { background: var(--primary); color: white; }
+
+        /* Preview Box */
+        .preview-box { background: #fffbeb; border: 1px dashed #f59e0b; padding: 15px; border-radius: 10px; margin-top: 10px; }
+
+        .btn { border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; color: white; width: 100%; }
         .btn-blue { background: var(--primary); }
         .btn-green { background: var(--secondary); }
         .btn-purple { background: var(--accent); }
         
-        /* Tables */
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .data-table th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; }
         .data-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
         
         .badge { padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
         .hidden { display: none; }
-
-        /* Financial Empty State */
-        .financial-placeholder { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        .financial-placeholder i { font-size: 5rem; color: #e2e8f0; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -49,7 +56,7 @@
 <div class="sidebar">
     <div class="sidebar-header">
         <h2 style="color:var(--primary)">TALAL.TEK</h2>
-        <small>Control Center v2.0</small>
+        <small>Control Center v2.5</small>
     </div>
     <div class="nav-item active" onclick="showSection('videoSec')"><i class="fas fa-video"></i> Lessons & Videos</div>
     <div class="nav-item" onclick="showSection('unitQSec')"><i class="fas fa-edit"></i> Unit Quizzes</div>
@@ -63,77 +70,92 @@
     <div id="videoSec" class="card section">
         <h3><i class="fas fa-plus-circle"></i> Add New Video Lesson</h3>
         <div class="form-grid">
-            <div class="form-group"><label>Unit Number</label><input type="text" id="vUnit" placeholder="e.g. Unit 1"></div>
-            <div class="form-group"><label>Lesson Title</label><input type="text" id="vTitle" placeholder="e.g. Slopes & Intercepts"></div>
+            <div class="form-group"><label>Unit Number</label><input type="text" id="vUnit" placeholder="Unit 1"></div>
+            <div class="form-group"><label>Lesson Title</label><input type="text" id="vTitle" placeholder="Lesson Name"></div>
         </div>
-        <div class="form-group"><label>YouTube Embed Link</label><input type="text" id="vUrl" placeholder="https://www.youtube.com/embed/XXXXXX"></div>
-        <button class="btn btn-blue" onclick="saveItem('video')">Add Lesson to Course</button>
+        <div class="form-group"><label>YouTube Embed Link</label><input type="text" id="vUrl"></div>
+        <button class="btn btn-blue" onclick="saveItem('video')">Add Lesson</button>
     </div>
 
     <div id="unitQSec" class="card section hidden">
-        <h3><i class="fas fa-pen-alt"></i> Add Unit Practice Question</h3>
+        <h3><i class="fas fa-pen-alt"></i> Unit Quiz Builder</h3>
         <div class="form-grid">
-            <div class="form-group"><label>Select Unit</label><select id="uTarget"><option>Unit 1</option><option>Unit 2</option><option>Unit 3</option></select></div>
-            <div class="form-group"><label>Question Type</label><select id="uType" onchange="toggleInputs('u')"><option value="mcq">Multiple Choice</option><option value="gridin">Grid-in</option></select></div>
+            <div class="form-group"><label>Target Unit</label><select id="uTarget"><option>Unit 1</option><option>Unit 2</option><option>Unit 3</option></select></div>
+            <div class="form-group"><label>Type</label><select id="uType" onchange="toggleInputs('u')"><option value="mcq">MCQ</option><option value="gridin">Grid-in</option></select></div>
         </div>
-        <div class="form-group"><label>Question Text (LaTeX Support)</label><textarea id="uText" rows="2"></textarea></div>
-        <div class="form-group"><label>Diagram/Image URL (Optional)</label><input type="text" id="uImg" placeholder="Link to image..."></div>
-        <div id="uMcqArea" class="form-grid"><input type="text" id="uA" placeholder="Opt A"><input type="text" id="uB" placeholder="Opt B"><input type="text" id="uC" placeholder="Opt C"><input type="text" id="uD" placeholder="Opt D"></div>
-        <div id="uGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="uCorrect" placeholder="Exact value"></div>
-        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Unit Question</button>
+        <div class="form-group"><label>Quiz Time (Minutes)</label><input type="number" id="uTime" value="20"></div>
+
+        <div class="form-group">
+            <label>Question Content</label>
+            <div class="toolbar">
+                <button class="tool-btn" onclick="insertMath('uText', 'sqrt')">√x</button>
+                <button class="tool-btn" onclick="insertMath('uText', 'frac')">a/b</button>
+                <button class="tool-btn" onclick="insertMath('uText', 'pow')">x²</button>
+                <button class="tool-btn" onclick="insertMath('uText', 'bold')">B</button>
+            </div>
+            <textarea id="uText" rows="4" oninput="updatePreview()" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
+        </div>
+
+        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview()" placeholder="URL here"></div>
+
+        <div class="preview-box">
+            <small style="color:#f59e0b">Preview Area:</small>
+            <div id="mathPreview" style="margin-top:10px;"></div>
+            <img id="imgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
+        </div>
+
+        <div id="uMcqArea" class="form-grid" style="margin-top:15px;">
+            <input type="text" id="uA" placeholder="Option A"><input type="text" id="uB" placeholder="Option B">
+            <input type="text" id="uC" placeholder="Option C"><input type="text" id="uD" placeholder="Option D">
+        </div>
+        <div id="uGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="uCorrect"></div>
+        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Question</button>
     </div>
 
     <div id="finalExamSec" class="card section hidden">
-        <h3><i class="fas fa-trophy"></i> Add Final Mock Exam Question</h3>
-        <div class="form-group"><label>Exam Set Name / Duration</label><input type="text" id="fSet" placeholder="e.g. Mock Exam 2024 / 60 mins"></div>
-        <div class="form-group"><label>Question Type</label><select id="fType" onchange="toggleInputs('f')"><option value="mcq">Multiple Choice</option><option value="gridin">Grid-in</option></select></div>
-        <div class="form-group"><label>Question Text</label><textarea id="fText" rows="2"></textarea></div>
-        <div id="fMcqArea" class="form-grid"><input type="text" id="fA" placeholder="Opt A"><input type="text" id="fB" placeholder="Opt B"><input type="text" id="fC" placeholder="Opt C"><input type="text" id="fD" placeholder="Opt D"></div>
-        <div id="fGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="fCorrect"></div>
-        <button class="btn btn-purple" onclick="saveItem('finalQ')">Add to Final Bank</button>
+        <h3>Final Exam (Future Edit)</h3>
+        <p>This section is reserved for Final Exams bank.</p>
     </div>
 
     <div id="studentSec" class="card section hidden">
-        <h3><i class="fas fa-user-friends"></i> Registered Students</h3>
-        <table class="data-table">
-            <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
-            <tbody id="studentTable"></tbody>
-        </table>
+        <h3>Students List</h3>
+        <table class="data-table"><tbody id="studentTable"></tbody></table>
     </div>
 
     <div id="financeSec" class="card section hidden">
-        <h3><i class="fas fa-wallet"></i> Financial & Payments Management</h3>
-        <div class="financial-placeholder">
-            <i class="fas fa-lock"></i>
-            <h2>Reserved for Financial Module</h2>
-            <p>هذا القسم سيسمح لك بمراجعة عمليات الدفع، تفعيل اشتراكات الطلاب يدوياً، وإدارة الفواتير.</p>
-            <div style="margin-top: 20px; color: #3498db; font-weight: bold;">[ Under Development ]</div>
-        </div>
+        <div class="financial-placeholder"><i class="fas fa-lock"></i><h2>Financial Module</h2><p>Locked for now.</p></div>
     </div>
 
     <div class="card" id="inventoryCard">
-        <h3><i class="fas fa-database"></i> Content Inventory</h3>
-        <table class="data-table">
-            <thead><tr><th>Type</th><th>Unit/Set</th><th>Content Preview</th><th>Action</th></tr></thead>
-            <tbody id="contentTable"></tbody>
-        </table>
+        <h3>Inventory</h3>
+        <table class="data-table"><tbody id="contentTable"></tbody></table>
     </div>
-
 </div>
 
 <script>
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        
-        // إخفاء جدول المحتوى فقط عند فتح قسم الطلاب أو المالية لزيادة التركيز
-        const inv = document.getElementById('inventoryCard');
-        inv.style.display = (id === 'studentSec' || id === 'financeSec') ? 'none' : 'block';
-        
+        document.getElementById('inventoryCard').style.display = (id==='studentSec' || id==='financeSec') ? 'none' : 'block';
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        
+        if(event.currentTarget.classList) event.currentTarget.classList.add('active');
         if(id === 'studentSec') renderStudents();
+    }
+
+    function insertMath(id, type) {
+        const area = document.getElementById(id);
+        let tag = (type==='sqrt') ? "$\\sqrt{x}$" : (type==='frac') ? "$\\frac{a}{b}$" : (type==='pow') ? "$x^{2}$" : "**Text**";
+        area.value += tag;
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const txt = document.getElementById('uText').value;
+        const img = document.getElementById('uImg').value;
+        document.getElementById('mathPreview').innerHTML = txt.replace(/\n/g, '<br>');
+        const imgP = document.getElementById('imgPreview');
+        if(img) { imgP.src = img; imgP.style.display = 'block'; } else { imgP.style.display = 'none'; }
+        if (window.MathJax) MathJax.typesetPromise();
     }
 
     function toggleInputs(p) {
@@ -143,20 +165,20 @@
     }
 
     function saveItem(type) {
-        let key = ''; let data = { id: Date.now(), type: type };
+        let key = (type === 'video') ? 'added_lessons' : (type === 'unitQ' ? 'added_questions' : 'final_exam_questions');
+        let data = { id: Date.now(), type: type };
         
         if(type === 'video') {
-            key = 'added_lessons';
             data.unitNum = document.getElementById('vUnit').value;
             data.title = document.getElementById('vTitle').value;
             data.videoURL = document.getElementById('vUrl').value;
-        } else if(type === 'unitQ' || type === 'finalQ') {
-            key = (type === 'unitQ') ? 'added_questions' : 'final_exam_questions';
+        } else {
             const p = (type === 'unitQ') ? 'u' : 'f';
             data.qType = document.getElementById(p+'Type').value;
             data.text = document.getElementById(p+'Text').value;
             data.img = (type === 'unitQ') ? document.getElementById('uImg').value : '';
-            data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : document.getElementById('fSet').value;
+            data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : '';
+            data.examTime = (type === 'unitQ') ? document.getElementById('uTime').value : 60;
             if(data.qType === 'mcq') {
                 data.options = [document.getElementById(p+'A').value, document.getElementById(p+'B').value, document.getElementById(p+'C').value, document.getElementById(p+'D').value];
             } else { data.correct = document.getElementById(p+'Correct').value; }
@@ -165,46 +187,21 @@
         let db = JSON.parse(localStorage.getItem(key) || '[]');
         db.push(data);
         localStorage.setItem(key, JSON.stringify(db));
-        alert("Data Saved Successfully!");
-        renderContent();
+        alert("Saved!"); renderContent();
     }
 
     function renderContent() {
         const body = document.getElementById('contentTable'); body.innerHTML = '';
-        const keys = ['added_lessons', 'added_questions', 'final_exam_questions'];
-        keys.forEach(key => {
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
-            items.forEach(item => {
-                body.innerHTML += `<tr>
-                    <td><span class="badge" style="background:#eee">${item.type.toUpperCase()}</span></td>
-                    <td>${item.unitNum || item.unit}</td>
-                    <td>${(item.title || item.text).substring(0,30)}...</td>
-                    <td><button onclick="deleteItem('${key}', ${item.id})" style="color:red; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
+        ['added_lessons', 'added_questions', 'final_exam_questions'].forEach(key => {
+            JSON.parse(localStorage.getItem(key) || '[]').forEach(item => {
+                body.innerHTML += `<tr><td>${item.type}</td><td>${item.unitNum || item.unit}</td><td>${(item.title || item.text).substring(0,20)}</td><td><button onclick="deleteItem('${key}', ${item.id})">Delete</button></td></tr>`;
             });
         });
     }
 
-    function renderStudents() {
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const body = document.getElementById('studentTable'); body.innerHTML = '';
-        users.forEach(u => {
-            body.innerHTML += `<tr>
-                <td>${u.name}</td><td>${u.email}</td>
-                <td><span class="badge" style="background:#dcfce7">Active</span></td>
-                <td><button onclick="deleteStudent('${u.email}')" style="color:red; border:none; background:none; cursor:pointer;">Remove</button></td>
-            </tr>`;
-        });
-    }
-
-    function deleteItem(key, id) {
-        let db = JSON.parse(localStorage.getItem(key)).filter(i => i.id !== id);
-        localStorage.setItem(key, JSON.stringify(db)); renderContent();
-    }
-
-    function deleteStudent(email) {
-        let db = JSON.parse(localStorage.getItem('users')).filter(u => u.email !== email);
-        localStorage.setItem('users', JSON.stringify(db)); renderStudents();
+    function deleteItem(k, id) {
+        localStorage.setItem(k, JSON.stringify(JSON.parse(localStorage.getItem(k)).filter(i => i.id !== id)));
+        renderContent();
     }
 
     window.onload = renderContent;
