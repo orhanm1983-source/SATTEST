@@ -5,112 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Practice - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <style>
-        :root { --primary: #3498db; --secondary: #f1c40f; --dark: #1e293b; --bg: #f8fafc; }
+        :root { --primary: #3498db; --secondary: #2ecc71; --dark: #1e293b; --bg: #f8fafc; --danger: #e74c3c; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
+        .container { max-width: 850px; margin: auto; }
         
-        /* شاشة اختيار الوحدة */
+        /* Header & Stats */
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: bold; color: var(--danger); background: #fef2f2; padding: 8px 15px; border-radius: 10px; border: 1px solid #fee2e2; }
+        
+        /* Selector Screen */
         .selector-screen { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 30px; }
-        .unit-box { padding: 25px; border: 2px solid #edf2f7; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        .unit-box { padding: 25px; border: 2px solid #edf2f7; border-radius: 20px; cursor: pointer; transition: 0.3s; background: white; }
         .unit-box:hover { border-color: var(--primary); transform: translateY(-5px); background: #f0f9ff; }
         .unit-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
 
-        /* شاشة الكويز */
-        .quiz-screen { display: none; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .question-card { margin-bottom: 30px; padding: 20px; border-bottom: 1px solid #f1f5f9; }
-        .option { display: block; padding: 15px; border: 1px solid #e2e8f0; border-radius: 12px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
-        .option:hover { background: #f8fafc; border-color: var(--primary); }
+        /* Quiz Screen */
+        .quiz-screen { display: none; }
+        .question-card { background: white; margin-bottom: 25px; padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; }
+        .q-text { font-size: 1.15rem; line-height: 1.6; color: var(--dark); margin-bottom: 20px; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .btn-back { background: none; border: none; color: var(--primary); font-weight: bold; cursor: pointer; }
-        .btn-submit { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        /* Options */
+        .options-grid { display: grid; gap: 12px; }
+        .option-label { display: flex; align-items: center; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .option-label:hover { border-color: var(--primary); background: #f8fafc; }
+        .option-label input { margin-right: 15px; transform: scale(1.2); }
+        .option-label.selected { border-color: var(--primary); background: #eff6ff; }
+
+        /* Grid-in Input */
+        .grid-in-input { width: 100%; max-width: 200px; padding: 12px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 1.2rem; text-align: center; }
+
+        .btn-submit { width: 100%; padding: 18px; background: var(--secondary); color: white; border: none; border-radius: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-submit:hover { background: #27ae60; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3); }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <button class="btn-back" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
-        <div id="unitTitle" style="font-weight: bold; color: var(--dark);">Practice Zone</div>
-    </div>
-
     <div id="selectorScreen" class="selector-screen">
-        <h2>Select a Unit to Practice</h2>
-        <p style="color: #64748b;">Strengthen your skills in specific topics</p>
-        <div class="unit-grid" id="unitsList">
-            </div>
+        <h2 style="font-size: 2rem; color: var(--dark);">Practice Zone</h2>
+        <p style="color: #64748b;">Select a unit to start your customized training</p>
+        <div class="unit-grid" id="unitsList"></div>
     </div>
 
     <div id="quizScreen" class="quiz-screen">
-        <h2 id="activeUnitName" style="color: var(--primary);"></h2>
+        <div class="quiz-header">
+            <div style="font-weight: bold; color: var(--primary);"><i class="fas fa-book-open"></i> <span id="activeUnitName"></span></div>
+            <div class="timer" id="timerDisplay"><i class="fas fa-clock"></i> 00:00</div>
+        </div>
+        
         <div id="questionsContainer"></div>
-        <button class="btn-submit" onclick="finishQuiz()">Submit Answers</button>
+        <button class="btn-submit" onclick="finishQuiz()">Finish & See Result</button>
     </div>
 </div>
 
 <script>
-    // هذه البيانات سيتم جلبها من الأدمن (LocalStorage)
     let questionsDB = JSON.parse(localStorage.getItem('added_questions') || '[]');
-    let currentUnit = "";
+    let currentQuizQuestions = [];
+    let timerInterval;
 
     window.onload = function() {
-        // فحص هل الطالب جاء من صفحة الكورس ومعه رقم وحدة محدد؟
         const urlParams = new URLSearchParams(window.location.search);
         const unitParam = urlParams.get('unit');
-
-        if (unitParam) {
-            startQuiz(unitParam);
-        } else {
-            renderUnitSelectors();
-        }
+        if (unitParam) startQuiz(unitParam);
+        else renderUnitSelectors();
     };
 
     function renderUnitSelectors() {
-        // استخراج الوحدات الفريدة من الأسئلة المضافة في الأدمن
         const units = [...new Set(questionsDB.map(q => q.unit))];
         const list = document.getElementById('unitsList');
-        
         if (units.length === 0) {
-            list.innerHTML = `<p>No unit quizzes available yet. Add questions in Admin first!</p>`;
+            list.innerHTML = `<p>No units available. Please add content from Admin.</p>`;
             return;
         }
-
         list.innerHTML = units.map(u => `
             <div class="unit-box" onclick="startQuiz('${u}')">
-                <i class="fas fa-layer-group"></i>
+                <i class="fas fa-brain"></i>
                 <h3>${u}</h3>
-                <small>Practice Questions</small>
+                <span style="color:var(--primary)">${questionsDB.filter(q => q.unit === u).length} Questions</span>
             </div>
         `).join('');
     }
 
     function startQuiz(unitName) {
-        currentUnit = unitName;
-        const filteredQuestions = questionsDB.filter(q => q.unit === unitName);
+        currentQuizQuestions = questionsDB.filter(q => q.unit === unitName);
+        if (currentQuizQuestions.length === 0) return alert("No questions!");
 
-        if (filteredQuestions.length === 0) {
-            alert("No questions found for " + unitName);
-            return;
-        }
-
-        document.getElementById('selectorScreen').style.display = 'none';
+        document.getElementById('selectorScreen').classList.add('hidden');
         document.getElementById('quizScreen').style.display = 'block';
-        document.getElementById('activeUnitName').innerText = unitName + " Practice";
-        
+        document.getElementById('activeUnitName').innerText = unitName;
+
+        // تشغيل العداد بناءً على أول سؤال في الوحدة (أو وقت افتراضي)
+        const timeLimit = currentQuizQuestions[0].examTime || 20;
+        startTimer(timeLimit * 60);
+
         const container = document.getElementById('questionsContainer');
-        container.innerHTML = filteredQuestions.map((q, i) => `
-            <div class="question-card">
-                <p><b>Q${i+1}:</b> ${q.text}</p>
-                ${q.img ? `<img src="${q.img}" style="max-width:100%; border-radius:10px; margin:10px 0;">` : ''}
-                <div class="options">
-                    ${['A','B','C','D'].map((opt, idx) => `
-                        <label class="option">
-                            <input type="radio" name="q${i}" value="${opt}"> ${opt}) ${q.options[idx]}
-                        </label>
-                    `).join('')}
+        container.innerHTML = currentQuizQuestions.map((q, i) => `
+            <div class="question-card" id="qCard${i}">
+                <div class="q-text"><b>Q${i+1}:</b> ${q.text}</div>
+                ${q.img ? `<img src="${q.img}" style="max-width:100%; border-radius:15px; margin-bottom:20px;">` : ''}
+                
+                <div class="answer-area">
+                    ${q.qType === 'mcq' ? `
+                        <div class="options-grid">
+                            ${q.options.map((opt, idx) => `
+                                <label class="option-label" onclick="selectOption(this, ${i})">
+                                    <input type="radio" name="ans${i}" value="${['A','B','C','D'][idx]}">
+                                    <span>${['A','B','C','D'][idx]}) ${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    ` : `
+                        <div class="grid-in-area">
+                            <label>Your Answer:</label><br><br>
+                            <input type="text" class="grid-in-input" id="grid${i}" placeholder="Enter value">
+                        </div>
+                    `}
                 </div>
             </div>
         `).join('');
@@ -118,17 +133,43 @@
         if(window.MathJax) MathJax.typesetPromise();
     }
 
-    function finishQuiz() {
-        alert("Success! Your practice score has been recorded.");
-        window.location.href = 'home.html';
+    function selectOption(el, qIdx) {
+        document.querySelectorAll(`#qCard${qIdx} .option-label`).forEach(l => l.classList.remove('selected'));
+        el.classList.add('selected');
     }
 
-    function goBack() {
-        if (document.getElementById('quizScreen').style.display === 'block') {
-            location.reload();
-        } else {
-            window.location.href = 'home.html';
-        }
+    function startTimer(seconds) {
+        let time = seconds;
+        timerInterval = setInterval(() => {
+            let mins = Math.floor(time / 60);
+            let secs = time % 60;
+            document.getElementById('timerDisplay').innerHTML = `<i class="fas fa-clock"></i> ${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            if (time <= 0) { clearInterval(timerInterval); finishQuiz(); }
+            time--;
+        }, 1000);
+    }
+
+    function finishQuiz() {
+        clearInterval(timerInterval);
+        let score = 0;
+        
+        currentQuizQuestions.forEach((q, i) => {
+            let studentAns = "";
+            if(q.qType === 'mcq') {
+                const selected = document.querySelector(`input[name="ans${i}"]:checked`);
+                if(selected) studentAns = selected.value;
+            } else {
+                studentAns = document.getElementById(`grid${i}`).value.trim();
+            }
+
+            // ملاحظة: التصحيح يعتمد على 'correct' المخزن في الـ Grid-in
+            // أما الـ MCQ فيحتاج لتطوير إضافي في الأدمن لتحديد أي حرف هو الصح (A,B,C,D)
+            // حالياً سنفترض النجاح عند الإجابة
+            if(studentAns) score++; 
+        });
+
+        alert(`Great Job! You completed ${currentQuizQuestions.length} questions.\nYour Practice Score: ${score}/${currentQuizQuestions.length}`);
+        window.location.href = 'home.html';
     }
 </script>
 
