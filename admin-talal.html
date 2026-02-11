@@ -6,18 +6,12 @@
     <title>Master Admin - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script type="text/javascript" async
-      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-    </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [['$','$']],
-          processEscapes: true
-        },
-        showProcessingMessages: false,
-        messageStyle: "none"
+        tex2jax: { inlineMath: [['$','$']], processEscapes: true },
+        showProcessingMessages: false, messageStyle: "none"
       });
     </script>
 
@@ -43,6 +37,7 @@
         .btn-blue { background: var(--primary); }
         .btn-green { background: var(--secondary); }
         .btn-purple { background: var(--accent); }
+        .btn-export { background: #6366f1; margin-bottom: 25px; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .data-table th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; }
         .data-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
@@ -56,11 +51,14 @@
     <div class="nav-item active" onclick="showSection('videoSec')"><i class="fas fa-video"></i> Lessons & Videos</div>
     <div class="nav-item" onclick="showSection('unitQSec')"><i class="fas fa-edit"></i> Unit Quizzes</div>
     <div class="nav-item" onclick="showSection('finalExamSec')"><i class="fas fa-file-invoice"></i> Final Exams</div>
-    <div class="nav-item" onclick="showSection('studentSec')"><i class="fas fa-users"></i> Student Database</div>
-    <div class="nav-item" style="color: var(--money);" onclick="showSection('financeSec')"><i class="fas fa-file-invoice-dollar"></i> Financial & Access</div>
 </div>
 
 <div class="main-content">
+    
+    <button class="btn btn-export" onclick="exportToDataFile()">
+        <i class="fas fa-cloud-upload-alt"></i> UPDATE STUDENT DATA (Export data.js)
+    </button>
+
     <div id="videoSec" class="card section">
         <h3><i class="fas fa-plus-circle"></i> Add Video Lesson</h3>
         <div class="form-grid">
@@ -83,46 +81,17 @@
                 <button class="tool-btn" onclick="insertMath('uText', 'sqrt')">√x</button>
                 <button class="tool-btn" onclick="insertMath('uText', 'frac')">a/b</button>
                 <button class="tool-btn" onclick="insertMath('uText', 'pow')">x²</button>
-                <button class="tool-btn" onclick="insertMath('uText', 'bold')">B</button>
             </div>
             <textarea id="uText" rows="4" oninput="updatePreview('u')" placeholder="Type text or $math$ here..."></textarea>
-        </div>
-        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview('u')"></div>
-        <div class="preview-box">
-            <small style="color:#f59e0b">Live Preview:</small>
-            <div id="uMathPreview"></div>
-            <img id="uImgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
         </div>
         <div id="uMcqArea" class="form-grid" style="margin-top:15px;">
             <input type="text" id="uA" placeholder="Option A"><input type="text" id="uB" placeholder="Option B">
             <input type="text" id="uC" placeholder="Option C"><input type="text" id="uD" placeholder="Option D">
         </div>
-        <div id="uGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="uCorrect"></div>
         <button class="btn btn-green" onclick="saveItem('unitQ')">Save Question</button>
     </div>
 
-    <div id="finalExamSec" class="card section hidden">
-        <h3><i class="fas fa-trophy"></i> Final Mock Exam</h3>
-        <div class="form-grid">
-            <div class="form-group"><label>Exam Name</label><input type="text" id="fSet" placeholder="Test 1"></div>
-            <div class="form-group"><label>Module</label><select id="fModule"><option value="M1">Module 1</option><option value="M2">Module 2</option></select></div>
-        </div>
-        <div class="form-group">
-            <label>Question Content</label>
-            <div class="toolbar">
-                <button class="tool-btn" onclick="insertMath('fText', 'sqrt')">√x</button>
-                <button class="tool-btn" onclick="insertMath('fText', 'frac')">a/b</button>
-                <button class="tool-btn" onclick="insertMath('fText', 'pow')">x²</button>
-            </div>
-            <textarea id="fText" rows="4" oninput="updatePreview('f')"></textarea>
-        </div>
-        <div class="preview-box" style="background:#f0fdf4;">
-            <div id="fMathPreview"></div>
-        </div>
-        <button class="btn btn-purple" onclick="saveItem('finalQ')">Save Final Question</button>
-    </div>
-
-    <div class="card" id="inventoryCard"><h3>Content Inventory</h3><table class="data-table"><tbody id="contentTable"></tbody></table></div>
+    <div class="card"><h3>Content Inventory</h3><table class="data-table"><tbody id="contentTable"></tbody></table></div>
 </div>
 
 <script>
@@ -130,60 +99,58 @@
         document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(event.currentTarget) event.currentTarget.classList.add('active');
-    }
-
-    function insertMath(id, type) {
-        const area = document.getElementById(id);
-        let tag = (type==='sqrt') ? "$\\sqrt{x}$" : (type==='frac') ? "$\\frac{a}{b}$" : (type==='pow') ? "$x^{2}$" : "**Text**";
-        const start = area.selectionStart;
-        const end = area.selectionEnd;
-        area.value = area.value.substring(0, start) + tag + area.value.substring(end);
-        area.focus();
-        updatePreview(id.charAt(0));
     }
 
     function updatePreview(p) {
         const txt = document.getElementById(p+'Text').value;
         const mathPreview = document.getElementById(p+'MathPreview');
-        
-        // تحديث النص مع دعم كسر السطور
-        mathPreview.innerHTML = txt.replace(/\n/g, '<br>');
-
-        // أمر إعادة المعالجة لـ MathJax v2.7
-        if (window.MathJax) {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, mathPreview]);
+        if(mathPreview) {
+            mathPreview.innerHTML = txt.replace(/\n/g, '<br>');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, mathPreview]);
         }
-    }
-
-    function toggleInputs(p) {
-        const isMcq = document.getElementById(p+'Type').value === 'mcq';
-        document.getElementById(p+'McqArea').classList.toggle('hidden', !isMcq);
-        document.getElementById(p+'GridArea').classList.toggle('hidden', isMcq);
     }
 
     function saveItem(type) {
         let key = (type === 'video') ? 'added_lessons' : (type === 'unitQ' ? 'added_questions' : 'final_exam_questions');
         let data = { id: Date.now(), type: type };
-        const p = (type === 'unitQ') ? 'u' : 'f';
-
+        
         if(type === 'video') {
             data.unitNum = document.getElementById('vUnit').value;
             data.title = document.getElementById('vTitle').value;
             data.videoURL = document.getElementById('vUrl').value;
         } else {
-            data.qType = (type === 'unitQ') ? document.getElementById('uType').value : 'mcq';
-            data.text = document.getElementById(p+'Text').value;
-            data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : document.getElementById('fSet').value;
-            if(data.qType === 'mcq') {
-                data.options = [document.getElementById(p+'A')?.value, document.getElementById(p+'B')?.value, document.getElementById(p+'C')?.value, document.getElementById(p+'D')?.value];
-            }
+            data.text = document.getElementById('uText').value;
+            data.unit = document.getElementById('uTarget').value;
+            data.options = [document.getElementById('uA').value, document.getElementById('uB').value, document.getElementById('uC').value, document.getElementById('uD').value];
         }
 
         let db = JSON.parse(localStorage.getItem(key) || '[]');
         db.push(data);
         localStorage.setItem(key, JSON.stringify(db));
-        alert("Saved!"); renderContent();
+        alert("Saved to your local browser! Don't forget to 'Export' to update students."); 
+        renderContent();
+    }
+
+    // الدالة السحرية لتصدير الملف للطالب
+    function exportToDataFile() {
+        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        const unitQs = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        const finalQs = JSON.parse(localStorage.getItem('final_exam_questions') || '[]');
+
+        const fullData = {
+            lessons: lessons,
+            unitQuestions: unitQs,
+            finalQuestions: finalQs
+        };
+
+        const fileContent = "const SITE_DATA = " + JSON.stringify(fullData) + ";";
+        const blob = new Blob([fileContent], { type: 'text/javascript' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.js'; // هذا هو الملف الذي يحتاجه الطالب
+        a.click();
+        alert("Success! Now put the downloaded 'data.js' file into your website folder.");
     }
 
     function renderContent() {
