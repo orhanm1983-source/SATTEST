@@ -39,7 +39,7 @@
         <i class="fas fa-graduation-cap"></i>
     </div>
     
-    <h1>Welcome, Orhan!</h1>
+    <h1 id="welcomeTitle">Welcome!</h1>
     <p>Select your destination to continue learning.</p>
 
     <div class="menu-grid">
@@ -64,6 +64,27 @@
         <i class="fas fa-user-shield"></i> Admin Dashboard
     </a>
 </div>
+
+<script>
+    window.onload = function() {
+        // جلب الاسم من الذاكرة
+        let savedName = localStorage.getItem('student_name');
+
+        // إذا لم يوجد اسم، نطلبه من المستخدم
+        if (!savedName) {
+            savedName = prompt("Please enter your name:");
+            if (savedName && savedName.trim() !== "") {
+                localStorage.setItem('student_name', savedName);
+            } else {
+                savedName = "Student";
+                localStorage.setItem('student_name', "Student");
+            }
+        }
+
+        // تحديث النص في الصفحة
+        document.getElementById('welcomeTitle').innerText = `Welcome, ${savedName}!`;
+    };
+</script>
 
 </body>
 </html>
