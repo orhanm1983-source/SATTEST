@@ -3,112 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - TALAL.TEK</title>
+    <title>Control Panel - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #3498db; --dark: #1e293b; --bg: #f1f5f9; }
+        :root { --primary: #3498db; --secondary: #2ecc71; --dark: #1e293b; --bg: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
-        
-        /* Sidebar */
-        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; color: var(--primary); }
-        .nav-item { padding: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); }
 
-        /* Main Content */
-        .main-content { margin-left: 280px; padding: 40px; width: calc(100% - 280px); }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        /* Sidebar Sidebar */
+        .sidebar { width: 260px; background: var(--dark); color: white; height: 100vh; position: fixed; padding: 20px 0; }
+        .sidebar-header { padding: 0 20px 30px; border-bottom: 1px solid #334155; margin-bottom: 20px; }
+        .sidebar-header h2 { font-size: 1.4rem; color: var(--primary); display: flex; align-items: center; gap: 10px; }
         
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark); }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
+        .nav-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; color: #94a3b8; }
+        .nav-item:hover { background: #334155; color: white; }
+        .nav-item.active { background: var(--primary); color: white; border-left: 5px solid white; }
+
+        /* Content Area */
+        .main-content { margin-left: 260px; padding: 40px; width: 100%; }
+        .page-title { margin-bottom: 30px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        .btn-save { background: var(--primary); color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        h3 { margin-top: 0; color: var(--dark); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #475569; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; }
         
-        .table-area { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .table-area th, .table-area td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
-        .table-area th { background: #f8fafc; }
-        .btn-delete { color: #e74c3c; cursor: pointer; border: none; background: none; }
+        .btn { border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; width: 100%; }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-green { background: var(--secondary); color: white; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* List Styling */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; }
+        .data-table th { background: #f1f5f9; padding: 15px; text-align: left; font-size: 0.85rem; color: #64748b; }
+        .data-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .badge-video { background: #dcfce7; color: #166534; }
+        .badge-q { background: #dbeafe; color: #1e40af; }
+        .btn-del { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2><i class="fas fa-user-shield"></i> TALAL Admin</h2>
-    <div class="nav-item active" onclick="showSection('questionsSec')"><i class="fas fa-pen"></i> Add Questions</div>
-    <div class="nav-item" onclick="showSection('videosSec')"><i class="fas fa-video"></i> Manage Lessons</div>
+    <div class="sidebar-header">
+        <h2><i class="fas fa-tools"></i> TALAL.TEK</h2>
+        <small style="color: #64748b;">Admin Control Panel</small>
+    </div>
+    <div class="nav-item active" onclick="location.reload()"><i class="fas fa-home"></i> Dashboard</div>
+    <div class="nav-item" onclick="window.location.href='home.html'"><i class="fas fa-eye"></i> View Site</div>
 </div>
 
 <div class="main-content">
-    <div id="questionsSec" class="card">
-        <h3>Add New Question</h3>
-        <div class="form-group">
-            <label>Select Unit</label>
-            <select id="qUnit">
-                <option value="Unit 1">Unit 1: Linear Equations</option>
-                <option value="Unit 2">Unit 2: Functions</option>
-                <option value="Unit 3">Unit 3: Geometry</option>
-                <option value="Unit 4">Unit 4: Data Analysis</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Question Text (Supports LaTeX)</label>
-            <textarea id="qText" rows="3" placeholder="e.g. Solve: $x + 5 = 10$"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Options (A, B, C, D)</label>
-            <input type="text" id="optA" placeholder="Option A" style="margin-bottom: 5px;">
-            <input type="text" id="optB" placeholder="Option B" style="margin-bottom: 5px;">
-            <input type="text" id="optC" placeholder="Option C" style="margin-bottom: 5px;">
-            <input type="text" id="optD" placeholder="Option D">
-        </div>
-        <button class="btn-save" onclick="saveQuestion()">Save Question</button>
+    <div class="page-title">
+        <h1>Master Management</h1>
+        <p style="color: #64748b;">Manage your SAT videos and question bank by units.</p>
     </div>
 
-    <div id="videosSec" class="card" style="display:none;">
-        <h3>Manage Video Lessons</h3>
-        <div class="form-group">
-            <label>Unit Number</label>
-            <input type="text" id="vUnit" placeholder="e.g. Unit 1">
+    <div class="grid-container">
+        <div class="card">
+            <h3><i class="fas fa-video" style="color:var(--primary)"></i> Add Video Lesson</h3>
+            <div class="form-group">
+                <label>Unit Identifier</label>
+                <select id="vUnit">
+                    <option value="Unit 1">Unit 1</option>
+                    <option value="Unit 2">Unit 2</option>
+                    <option value="Unit 3">Unit 3</option>
+                    <option value="Unit 4">Unit 4</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lesson Title</label>
+                <input type="text" id="vTitle" placeholder="e.g., Solving Quadratics">
+            </div>
+            <div class="form-group">
+                <label>YouTube Embed Link</label>
+                <input type="text" id="vUrl" placeholder="https://www.youtube.com/embed/...">
+            </div>
+            <button class="btn btn-blue" onclick="saveVideo()">Add Video to Course</button>
         </div>
-        <div class="form-group">
-            <label>Lesson Title</label>
-            <input type="text" id="vTitle" placeholder="e.g. Introduction to Slopes">
+
+        <div class="card">
+            <h3><i class="fas fa-question-circle" style="color:var(--secondary)"></i> Add Unit Question</h3>
+            <div class="form-group">
+                <label>Link to Unit</label>
+                <select id="qUnit">
+                    <option value="Unit 1">Unit 1</option>
+                    <option value="Unit 2">Unit 2</option>
+                    <option value="Unit 3">Unit 3</option>
+                    <option value="Unit 4">Unit 4</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Question Content</label>
+                <textarea id="qText" rows="2" placeholder="Write question..."></textarea>
+            </div>
+            <div class="grid-container" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="optA" placeholder="Option A">
+                <input type="text" id="optB" placeholder="Option B">
+                <input type="text" id="optC" placeholder="Option C">
+                <input type="text" id="optD" placeholder="Option D">
+            </div>
+            <button class="btn btn-green" style="margin-top:15px;" onclick="saveQuestion()">Save Question</button>
         </div>
-        <div class="form-group">
-            <label>YouTube Embed Link</label>
-            <input type="text" id="vUrl" placeholder="https://www.youtube.com/embed/XXXXXX">
-        </div>
-        <button class="btn-save" onclick="saveVideo()" style="background: #2ecc71;">Add Lesson</button>
     </div>
 
-    <div class="card">
-        <h3>Current Items</h3>
-        <table class="table-area" id="itemsTable">
+    <div class="card" style="margin-top: 30px;">
+        <h3><i class="fas fa-database"></i> Content Inventory</h3>
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>Type</th>
                     <th>Unit</th>
-                    <th>Title/Text</th>
-                    <th>Action</th>
+                    <th>Title / Preview</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="tableBody">
+                </tbody>
         </table>
     </div>
 </div>
 
 <script>
-    function showSection(id) {
-        document.getElementById('questionsSec').style.display = 'none';
-        document.getElementById('videosSec').style.display = 'none';
-        document.getElementById(id).style.display = 'block';
+    // الدوال البرمجية نفسها لضمان عمل الصفحة
+    function saveVideo() {
+        const video = {
+            id: 'v' + Date.now(),
+            unitNum: document.getElementById('vUnit').value,
+            title: document.getElementById('vTitle').value,
+            videoURL: document.getElementById('vUrl').value,
+            type: 'video'
+        };
+        let db = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        db.push(video);
+        localStorage.setItem('added_lessons', JSON.stringify(db));
+        alert("Lesson saved successfully!");
+        renderTable();
     }
 
-    // حفظ الأسئلة
     function saveQuestion() {
         const question = {
-            id: Date.now(),
+            id: 'q' + Date.now(),
             unit: document.getElementById('qUnit').value,
             text: document.getElementById('qText').value,
             options: [
@@ -119,28 +158,10 @@
             ],
             type: 'question'
         };
-
         let db = JSON.parse(localStorage.getItem('added_questions') || '[]');
         db.push(question);
         localStorage.setItem('added_questions', JSON.stringify(db));
-        alert("Question Saved to " + question.unit);
-        renderTable();
-    }
-
-    // حفظ الفيديوهات
-    function saveVideo() {
-        const video = {
-            id: Date.now(),
-            unitNum: document.getElementById('vUnit').value,
-            title: document.getElementById('vTitle').value,
-            videoURL: document.getElementById('vUrl').value,
-            type: 'video'
-        };
-
-        let db = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        db.push(video);
-        localStorage.setItem('added_lessons', JSON.stringify(db));
-        alert("Video Lesson Added!");
+        alert("Question added to " + question.unit);
         renderTable();
     }
 
@@ -151,10 +172,20 @@
         body.innerHTML = '';
 
         vDb.forEach(v => {
-            body.innerHTML += `<tr><td>Video</td><td>${v.unitNum}</td><td>${v.title}</td><td><button onclick="deleteItem(${v.id}, 'video')" class="btn-delete">Delete</button></td></tr>`;
+            body.innerHTML += `<tr>
+                <td><span class="badge badge-video">VIDEO</span></td>
+                <td><b>${v.unitNum}</b></td>
+                <td>${v.title}</td>
+                <td><button onclick="deleteItem('${v.id}', 'video')" class="btn-del"><i class="fas fa-trash"></i></button></td>
+            </tr>`;
         });
         qDb.forEach(q => {
-            body.innerHTML += `<tr><td>Question</td><td>${q.unit}</td><td>${q.text.substring(0,20)}...</td><td><button onclick="deleteItem(${q.id}, 'question')" class="btn-delete">Delete</button></td></tr>`;
+            body.innerHTML += `<tr>
+                <td><span class="badge badge-q">QUIZ Q</span></td>
+                <td><b>${q.unit}</b></td>
+                <td>${q.text.substring(0, 30)}...</td>
+                <td><button onclick="deleteItem('${q.id}', 'question')" class="btn-del"><i class="fas fa-trash"></i></button></td>
+            </tr>`;
         });
     }
 
