@@ -2,207 +2,99 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>TALAL.TEK - Student Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Lessons - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --primary: #3498db; 
-            --primary-dark: #2980b9;
-            --bg: #f1f5f9; 
-            --text-dark: #1e293b;
-            --announcement-bg: #e1effe;
-            --announcement-text: #1e429f;
+        :root { --primary: #3498db; --secondary: #f1c40f; --dark: #1e293b; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        
+        .container { max-width: 850px; margin: auto; }
+        
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .back-btn { text-decoration: none; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        
+        .unit-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .unit-info { margin-bottom: 20px; }
+        .unit-badge { background: #ebf5ff; color: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .unit-title { margin: 10px 0; color: var(--dark); font-size: 1.6rem; }
+
+        .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; background: #000; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        .unit-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+        .quiz-status { font-size: 14px; color: #64748b; }
+        
+        .take-quiz-btn { 
+            background: var(--secondary); color: white; text-decoration: none; 
+            padding: 12px 25px; border-radius: 12px; font-weight: bold; 
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
         }
-
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; color: var(--text-dark); }
-
-        #announcement-bar { 
-            background: var(--announcement-bg); 
-            color: var(--announcement-text); 
-            padding: 12px; 
-            text-align: center; 
-            font-weight: 600; 
-            display: none; 
-            border-bottom: 1px solid #bcdefa;
-            font-size: 15px;
-        }
-
-        .header { 
-            background: white; 
-            padding: 12px 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-        }
-
-        .header h2 { margin: 0; color: var(--primary); font-size: 24px; letter-spacing: 1px; }
-
-        .back-btn { 
-            text-decoration: none; 
-            color: #64748b; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            padding: 10px 18px; 
-            border-radius: 10px; 
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            transition: 0.3s;
-        }
-
-        .back-btn:hover { background: #f1f5f9; color: var(--primary); border-color: var(--primary); }
-
-        .main-wrapper { display: flex; height: calc(100vh - 120px); padding: 20px; gap: 20px; }
-
-        .sidebar { width: 320px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; }
-
-        .sidebar-header { 
-            padding: 20px; 
-            background: #f8fafc;
-            border-bottom: 1px solid #eee; 
-            font-weight: bold; 
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        #lessonsList { overflow-y: auto; flex: 1; }
-
-        .lesson-item { 
-            padding: 16px 20px; 
-            border-bottom: 1px solid #f8fafc; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
-            color: #475569;
-        }
-
-        .lesson-item:hover { background: #f0f7ff; color: var(--primary); }
-
-        .lesson-item.active { 
-            background: #eff6ff; 
-            color: var(--primary);
-            font-weight: 600; 
-            border-left: 4px solid var(--primary); 
-        }
-
-        .video-area { flex: 1; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-
-        .video-container { width: 100%; aspect-ratio: 16/9; background: #0f172a; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-
-        iframe { width: 100%; height: 100%; border: none; }
-
-        .video-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-
-        #quizBtn { 
-            background: #10b981; 
-            color: white; 
-            padding: 12px 24px; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            display: none;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-
-        #quizBtn:hover { background: #059669; transform: translateY(-2px); }
-
-        @media (max-width: 1024px) { .main-wrapper { flex-direction: column; height: auto; } .sidebar { width: 100%; height: 300px; } }
+        .take-quiz-btn:hover { transform: scale(1.05); background: #d4ac0d; }
     </style>
 </head>
 <body>
 
-<div id="announcement-bar"></div>
-
-<div class="header">
-    <h2><i class="fas fa-graduation-cap"></i> TALAL.TEK</h2>
-    <a href="home.html" class="back-btn"><i class="fas fa-sign-out-alt"></i> Exit Dashboard</a>
-</div>
-
-<div class="main-wrapper">
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <span id="welcomeName" style="color:var(--primary); font-size: 14px;">Welcome, Student 👋</span>
-            <span style="font-size: 18px;"><i class="fas fa-book-open"></i> Curriculum</span>
-        </div>
-        <div id="lessonsList"></div>
+<div class="container">
+    <div class="top-nav">
+        <a href="home.html" class="back-btn"><i class="fas fa-chevron-left"></i> Back to Portal</a>
+        <h3 style="margin:0; color:var(--dark)">My Learning Path</h3>
     </div>
 
-    <div class="video-area">
-        <div id="videoContainer" class="video-container">
-            <div style="color:#64748b; text-align:center;">
-                <i class="fas fa-play-circle" style="font-size: 50px; margin-bottom:10px; display:block; opacity:0.3;"></i>
-                Select a lesson to begin
-            </div>
+    <div id="lessonsContainer">
         </div>
-        
-        <div class="video-footer">
-            <h2 id="videoTitle" style="margin:0; font-size: 20px;">Lesson Title</h2>
-            <button id="quizBtn" onclick="location.href='exam.html'">
-                <i class="fas fa-pen-to-square"></i> Take Quiz
-            </button>
-        </div>
-    </div>
 </div>
 
 <script>
-    window.onload = function() {
-        // 1. تحديث الاسم ديناميكياً
-        const savedName = localStorage.getItem('student_name') || 'Student';
-        document.getElementById('welcomeName').innerText = `Welcome, ${savedName} 👋`;
-
-        // 2. عرض الإعلان
-        const announcement = localStorage.getItem('platform_announcement');
-        if(announcement && announcement.trim() !== "") {
-            const bar = document.getElementById('announcement-bar');
-            bar.innerText = announcement;
-            bar.style.display = 'block';
+    // هذه البيانات كمثال وسنقوم بربطها بلوحة الأدمن لاحقاً
+    const myLessons = [
+        { 
+            unitNum: "Unit 1", 
+            title: "Introduction to Linear Equations", 
+            videoURL: "https://www.youtube.com/embed/dQw4w9WgXcQ" // ضع رابط Embed لليوتيوب
+        },
+        { 
+            unitNum: "Unit 2", 
+            title: "Advanced SAT Functions", 
+            videoURL: "https://www.youtube.com/embed/dQw4w9WgXcQ" 
         }
+    ];
 
-        // 3. تحميل الدروس
-        loadLessons();
-    };
-
-    function loadLessons() {
-        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        const list = document.getElementById('lessonsList');
-        list.innerHTML = ""; 
-
-        if(lessons.length === 0) {
-            list.innerHTML = `<p style="padding:20px; color:#94a3b8; text-align:center;">No lessons added yet.</p>`;
+    function renderLessons() {
+        const container = document.getElementById('lessonsContainer');
+        
+        if (myLessons.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:#94a3b8;">No lessons uploaded yet.</p>`;
             return;
         }
 
-        lessons.forEach((lesson, index) => {
-            const div = document.createElement('div');
-            div.className = 'lesson-item';
-            div.innerHTML = `<i class="fas fa-circle-play"></i> ${lesson.title}`;
-            div.onclick = () => {
-                document.querySelectorAll('.lesson-item').forEach(e => e.classList.remove('active'));
-                div.classList.add('active');
-                playVideo(lesson.url, lesson.title);
-            };
-            list.appendChild(div);
-        });
+        container.innerHTML = myLessons.map(lesson => `
+            <div class="unit-card">
+                <div class="unit-info">
+                    <span class="unit-badge">${lesson.unitNum}</span>
+                    <h2 class="unit-title">${lesson.title}</h2>
+                </div>
+                
+                <div class="video-box">
+                    <iframe src="${lesson.videoURL}" allowfullscreen></iframe>
+                </div>
+
+                <div class="unit-actions">
+                    <div class="quiz-status">
+                        <i class="fas fa-info-circle"></i> Watch then practice
+                    </div>
+                    <a href="unit-quizzes.html?unit=${lesson.unitNum}" class="take-quiz-btn">
+                        <i class="fas fa-file-signature"></i> Take ${lesson.unitNum} Quiz
+                    </a>
+                </div>
+            </div>
+        `).join('');
     }
 
-    function playVideo(url, title) {
-        let videoId = "";
-        if(url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-        else if(url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1];
-        else videoId = url; 
-
-        document.getElementById('videoContainer').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1" allowfullscreen></iframe>`;
-        document.getElementById('videoTitle').innerText = title;
-        document.getElementById('quizBtn').style.display = 'flex';
-    }
+    // تشغيل الدالة عند التحميل
+    window.onload = renderLessons;
 </script>
+
 </body>
 </html>
