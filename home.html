@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="data.js"></script>
+
     <style>
         :root { --primary: #3498db; --secondary: #2ecc71; --dark: #1e293b; --bg: #f8fafc; --lock: #94a3b8; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
@@ -36,7 +39,6 @@
         .quizzes i { color: #f1c40f; }
         .exams i { color: var(--secondary); }
 
-        /* ستايل القفل */
         .locked { background: #f8fafc; cursor: not-allowed; border-style: dashed; }
         .locked .card-title { color: #94a3b8; }
         .lock-badge { background: #f1f5f9; color: #94a3b8; padding: 5px 10px; border-radius: 8px; font-size: 12px; }
@@ -101,28 +103,28 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // جلب بيانات الطالب من الـ LocalStorage
+        // 1. التحقق من وجود بيانات الطالب
         const user = JSON.parse(localStorage.getItem('currentUser'));
-        
         if (!user) {
-            // إذا لم يجد بيانات، يعيده لصفحة الدخول
             window.location.href = "index.html";
             return;
         }
-
-        // وضع اسم الطالب في مكانه
         document.getElementById('displayUserName').innerText = user.name;
 
-        // فحص التقدم لفتح الاختبار النهائي
-        // ملاحظة: يمكنك تغيير 'false' لـ 'true' يدوياً في المتصفح لتجربة الفتح
+        // 2. التحقق من ملف البيانات (data.js)
+        if (typeof SITE_DATA !== 'undefined') {
+            console.log("Data loaded successfully from data.js");
+        } else {
+            console.warn("data.js not found or empty. Using local storage only.");
+        }
+
+        // 3. فحص التقدم لفتح الاختبار النهائي
         const isFinished = localStorage.getItem('isCourseFinished') === 'true';
-        
         if (isFinished) {
             const finalCard = document.getElementById('finalExamLink');
             const lockStatus = document.getElementById('lockStatus');
-            
             finalCard.classList.remove('locked');
-            finalCard.href = "exam.html"; // الرابط الحقيقي للاختبار
+            finalCard.href = "exam.html"; 
             lockStatus.innerHTML = '<i class="fas fa-check-circle" style="color:#2ecc71"></i> Ready';
             lockStatus.style.color = "#2ecc71";
             lockStatus.style.background = "#ecfdf5";
