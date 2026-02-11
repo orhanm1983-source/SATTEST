@@ -109,7 +109,10 @@
             display: none;
             align-items: center;
             gap: 8px;
+            transition: 0.3s;
         }
+
+        #quizBtn:hover { background: #059669; transform: translateY(-2px); }
 
         @media (max-width: 1024px) { .main-wrapper { flex-direction: column; height: auto; } .sidebar { width: 100%; height: 300px; } }
     </style>
@@ -126,7 +129,7 @@
 <div class="main-wrapper">
     <div class="sidebar">
         <div class="sidebar-header">
-            <span style="color:var(--primary); font-size: 14px;">Welcome, Orhan 👋</span>
+            <span id="welcomeName" style="color:var(--primary); font-size: 14px;">Welcome, Student 👋</span>
             <span style="font-size: 18px;"><i class="fas fa-book-open"></i> Curriculum</span>
         </div>
         <div id="lessonsList"></div>
@@ -141,4 +144,5 @@
         </div>
         
         <div class="video-footer">
-            <h2 id="videoTitle"
+            <h2 id="videoTitle" style="margin:0; font-size: 20px;">Lesson Title</h2>
+            <button id="quizBtn
