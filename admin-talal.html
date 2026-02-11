@@ -6,8 +6,20 @@
     <title>Master Admin - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$']],
+          processEscapes: true
+        },
+        showProcessingMessages: false,
+        messageStyle: "none"
+      });
+    </script>
 
     <style>
         :root { --primary: #3498db; --secondary: #2ecc71; --accent: #9b59b6; --money: #f39c12; --danger: #e74c3c; --dark: #1e293b; --bg: #f1f5f9; }
@@ -40,7 +52,7 @@
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header"><h2 style="color:var(--primary)">TALAL.TEK</h2><small>Control Center v2.7</small></div>
+    <div class="sidebar-header"><h2 style="color:var(--primary)">TALAL.TEK</h2><small>Control Center v3.0</small></div>
     <div class="nav-item active" onclick="showSection('videoSec')"><i class="fas fa-video"></i> Lessons & Videos</div>
     <div class="nav-item" onclick="showSection('unitQSec')"><i class="fas fa-edit"></i> Unit Quizzes</div>
     <div class="nav-item" onclick="showSection('finalExamSec')"><i class="fas fa-file-invoice"></i> Final Exams</div>
@@ -49,7 +61,6 @@
 </div>
 
 <div class="main-content">
-
     <div id="videoSec" class="card section">
         <h3><i class="fas fa-plus-circle"></i> Add Video Lesson</h3>
         <div class="form-grid">
@@ -66,7 +77,6 @@
             <div class="form-group"><label>Target Unit</label><select id="uTarget"><option>Unit 1</option><option>Unit 2</option><option>Unit 3</option></select></div>
             <div class="form-group"><label>Type</label><select id="uType" onchange="toggleInputs('u')"><option value="mcq">MCQ</option><option value="gridin">Grid-in</option></select></div>
         </div>
-        <div class="form-group"><label>Quiz Time (Minutes)</label><input type="number" id="uTime" value="20"></div>
         <div class="form-group">
             <label>Question Content</label>
             <div class="toolbar">
@@ -75,11 +85,11 @@
                 <button class="tool-btn" onclick="insertMath('uText', 'pow')">x²</button>
                 <button class="tool-btn" onclick="insertMath('uText', 'bold')">B</button>
             </div>
-            <textarea id="uText" rows="4" oninput="updatePreview('u')" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
+            <textarea id="uText" rows="4" oninput="updatePreview('u')" placeholder="Type text or $math$ here..."></textarea>
         </div>
-        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview('u')" placeholder="URL here"></div>
+        <div class="form-group"><label>Image Link</label><input type="text" id="uImg" oninput="updatePreview('u')"></div>
         <div class="preview-box">
-            <small style="color:#f59e0b">Preview:</small>
+            <small style="color:#f59e0b">Live Preview:</small>
             <div id="uMathPreview"></div>
             <img id="uImgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
         </div>
@@ -88,18 +98,14 @@
             <input type="text" id="uC" placeholder="Option C"><input type="text" id="uD" placeholder="Option D">
         </div>
         <div id="uGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="uCorrect"></div>
-        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Unit Question</button>
+        <button class="btn btn-green" onclick="saveItem('unitQ')">Save Question</button>
     </div>
 
     <div id="finalExamSec" class="card section hidden">
-        <h3><i class="fas fa-trophy"></i> Final Mock Exam Builder</h3>
+        <h3><i class="fas fa-trophy"></i> Final Mock Exam</h3>
         <div class="form-grid">
-            <div class="form-group"><label>Exam Name</label><input type="text" id="fSet" placeholder="Practice Test 1"></div>
-            <div class="form-group"><label>Target Module</label><select id="fModule"><option value="M1">Module 1</option><option value="M2">Module 2</option></select></div>
-        </div>
-        <div class="form-grid">
-            <div class="form-group"><label>Type</label><select id="fType" onchange="toggleInputs('f')"><option value="mcq">MCQ</option><option value="gridin">Grid-in</option></select></div>
-            <div class="form-group"><label>Exam Time (Min)</label><input type="number" id="fTime" value="64"></div>
+            <div class="form-group"><label>Exam Name</label><input type="text" id="fSet" placeholder="Test 1"></div>
+            <div class="form-group"><label>Module</label><select id="fModule"><option value="M1">Module 1</option><option value="M2">Module 2</option></select></div>
         </div>
         <div class="form-group">
             <label>Question Content</label>
@@ -107,26 +113,15 @@
                 <button class="tool-btn" onclick="insertMath('fText', 'sqrt')">√x</button>
                 <button class="tool-btn" onclick="insertMath('fText', 'frac')">a/b</button>
                 <button class="tool-btn" onclick="insertMath('fText', 'pow')">x²</button>
-                <button class="tool-btn" onclick="insertMath('fText', 'bold')">B</button>
             </div>
-            <textarea id="fText" rows="4" oninput="updatePreview('f')" style="border-top-left-radius:0; border-top-right-radius:0;"></textarea>
+            <textarea id="fText" rows="4" oninput="updatePreview('f')"></textarea>
         </div>
-        <div class="form-group"><label>Image Link</label><input type="text" id="fImg" oninput="updatePreview('f')" placeholder="URL here"></div>
-        <div class="preview-box" style="background: #f0fdf4; border-color: #22c55e;">
-            <small style="color:#15803d">Final Preview:</small>
+        <div class="preview-box" style="background:#f0fdf4;">
             <div id="fMathPreview"></div>
-            <img id="fImgPreview" style="max-width:100%; display:none; margin-top:10px; border-radius:8px;">
         </div>
-        <div id="fMcqArea" class="form-grid" style="margin-top:15px;">
-            <input type="text" id="fA" placeholder="Option A"><input type="text" id="fB" placeholder="Option B">
-            <input type="text" id="fC" placeholder="Option C"><input type="text" id="fD" placeholder="Option D">
-        </div>
-        <div id="fGridArea" class="form-group hidden"><label>Correct Answer</label><input type="text" id="fCorrect"></div>
         <button class="btn btn-purple" onclick="saveItem('finalQ')">Save Final Question</button>
     </div>
 
-    <div id="studentSec" class="card section hidden"><h3>Students</h3><table class="data-table"><tbody id="studentTable"></tbody></table></div>
-    <div id="financeSec" class="card section hidden"><div class="financial-placeholder"><i class="fas fa-lock"></i><h2>Financial</h2></div></div>
     <div class="card" id="inventoryCard"><h3>Content Inventory</h3><table class="data-table"><tbody id="contentTable"></tbody></table></div>
 </div>
 
@@ -134,40 +129,30 @@
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        document.getElementById('inventoryCard').style.display = (id==='studentSec' || id==='financeSec') ? 'none' : 'block';
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         if(event.currentTarget) event.currentTarget.classList.add('active');
-        if(id === 'studentSec') renderStudents();
     }
 
     function insertMath(id, type) {
         const area = document.getElementById(id);
         let tag = (type==='sqrt') ? "$\\sqrt{x}$" : (type==='frac') ? "$\\frac{a}{b}$" : (type==='pow') ? "$x^{2}$" : "**Text**";
-        
-        // إدراج النص في مكان المؤشر بدلاً من الإضافة في النهاية فقط
         const start = area.selectionStart;
         const end = area.selectionEnd;
         area.value = area.value.substring(0, start) + tag + area.value.substring(end);
-        
         area.focus();
         updatePreview(id.charAt(0));
     }
 
     function updatePreview(p) {
         const txt = document.getElementById(p+'Text').value;
-        const img = document.getElementById(p+'Img').value;
         const mathPreview = document.getElementById(p+'MathPreview');
-        const imgP = document.getElementById(p+'ImgPreview');
-
-        // تحديث النص أولاً
+        
+        // تحديث النص مع دعم كسر السطور
         mathPreview.innerHTML = txt.replace(/\n/g, '<br>');
 
-        // تحديث الصورة
-        if(img) { imgP.src = img; imgP.style.display = 'block'; } else { imgP.style.display = 'none'; }
-
-        // إعادة تفعيل MathJax على عنصر المعاينة فقط لضمان السرعة
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            MathJax.typesetPromise([mathPreview]).catch(err => console.log(err));
+        // أمر إعادة المعالجة لـ MathJax v2.7
+        if (window.MathJax) {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, mathPreview]);
         }
     }
 
@@ -187,28 +172,25 @@
             data.title = document.getElementById('vTitle').value;
             data.videoURL = document.getElementById('vUrl').value;
         } else {
-            data.qType = document.getElementById(p+'Type').value;
+            data.qType = (type === 'unitQ') ? document.getElementById('uType').value : 'mcq';
             data.text = document.getElementById(p+'Text').value;
-            data.img = document.getElementById(p+'Img').value;
             data.unit = (type === 'unitQ') ? document.getElementById('uTarget').value : document.getElementById('fSet').value;
-            data.module = (type === 'finalQ') ? document.getElementById('fModule').value : 'N/A';
-            data.examTime = document.getElementById(p+'Time').value;
             if(data.qType === 'mcq') {
-                data.options = [document.getElementById(p+'A').value, document.getElementById(p+'B').value, document.getElementById(p+'C').value, document.getElementById(p+'D').value];
-            } else { data.correct = document.getElementById(p+'Correct').value; }
+                data.options = [document.getElementById(p+'A')?.value, document.getElementById(p+'B')?.value, document.getElementById(p+'C')?.value, document.getElementById(p+'D')?.value];
+            }
         }
 
         let db = JSON.parse(localStorage.getItem(key) || '[]');
         db.push(data);
         localStorage.setItem(key, JSON.stringify(db));
-        alert("Saved Successfully!"); renderContent();
+        alert("Saved!"); renderContent();
     }
 
     function renderContent() {
         const body = document.getElementById('contentTable'); body.innerHTML = '';
         ['added_lessons', 'added_questions', 'final_exam_questions'].forEach(key => {
             JSON.parse(localStorage.getItem(key) || '[]').forEach(item => {
-                body.innerHTML += `<tr><td><span class="badge">${item.type}</span></td><td>${item.unitNum || item.unit} ${item.module ? '- '+item.module : ''}</td><td>${(item.title || item.text).substring(0,25)}...</td><td><button onclick="deleteItem('${key}', ${item.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+                body.innerHTML += `<tr><td>${item.type}</td><td>${item.unitNum || item.unit}</td><td>${(item.title || item.text || '').substring(0,20)}</td><td><button onclick="deleteItem('${key}', ${item.id})">Delete</button></td></tr>`;
             });
         });
     }
