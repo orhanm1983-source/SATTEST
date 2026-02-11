@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Practice - TALAL.TEK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        :root { --primary: #3498db; --secondary: #f1c40f; --dark: #1e293b; --bg: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        /* شاشة اختيار الوحدة */
+        .selector-screen { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+        .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 30px; }
+        .unit-box { padding: 25px; border: 2px solid #edf2f7; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .unit-box:hover { border-color: var(--primary); transform: translateY(-5px); background: #f0f9ff; }
+        .unit-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; }
+
+        /* شاشة الكويز */
+        .quiz-screen { display: none; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .question-card { margin-bottom: 30px; padding: 20px; border-bottom: 1px solid #f1f5f9; }
+        .option { display: block; padding: 15px; border: 1px solid #e2e8f0; border-radius: 12px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+        .option:hover { background: #f8fafc; border-color: var(--primary); }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .btn-back { background: none; border: none; color: var(--primary); font-weight: bold; cursor: pointer; }
+        .btn-submit { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button class="btn-back" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+        <div id="unitTitle" style="font-weight: bold; color: var(--dark);">Practice Zone</div>
+    </div>
+
+    <div id="selectorScreen" class="selector-screen">
+        <h2>Select a Unit to Practice</h2>
+        <p style="color: #64748b;">Strengthen your skills in specific topics</p>
+        <div class="unit-grid" id="unitsList">
+            </div>
+    </div>
+
+    <div id="quizScreen" class="quiz-screen">
+        <h2 id="activeUnitName" style="color: var(--primary);"></h2>
+        <div id="questionsContainer"></div>
+        <button class="btn-submit" onclick="finishQuiz()">Submit Answers</button>
+    </div>
+</div>
+
+<script>
+    // هذه البيانات سيتم جلبها من الأدمن (LocalStorage)
+    let questionsDB = JSON.parse(localStorage.getItem('added_questions') || '[]');
+    let currentUnit = "";
+
+    window.onload = function() {
+        // فحص هل الطالب جاء من صفحة الكورس ومعه رقم وحدة محدد؟
+        const urlParams = new URLSearchParams(window.location.search);
+        const unitParam = urlParams.get('unit');
+
+        if (unitParam) {
+            startQuiz(unitParam);
+        } else {
+            renderUnitSelectors();
+        }
+    };
+
+    function renderUnitSelectors() {
+        // استخراج الوحدات الفريدة من الأسئلة المضافة في الأدمن
+        const units = [...new Set(questionsDB.map(q => q.unit))];
+        const list = document.getElementById('unitsList');
+        
+        if (units.length === 0) {
+            list.innerHTML = `<p>No unit quizzes available yet. Add questions in Admin first!</p>`;
+            return;
+        }
+
+        list.innerHTML = units.map(u => `
+            <div class="unit-box" onclick="startQuiz('${u}')">
+                <i class="fas fa-layer-group"></i>
+                <h3>${u}</h3>
+                <small>Practice Questions</small>
+            </div>
+        `).join('');
+    }
+
+    function startQuiz(unitName) {
+        currentUnit = unitName;
+        const filteredQuestions = questionsDB.filter(q => q.unit === unitName);
+
+        if (filteredQuestions.length === 0) {
+            alert("No questions found for " + unitName);
+            return;
+        }
+
+        document.getElementById('selectorScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+        document.getElementById('activeUnitName').innerText = unitName + " Practice";
+        
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = filteredQuestions.map((q, i) => `
+            <div class="question-card">
+                <p><b>Q${i+1}:</b> ${q.text}</p>
+                ${q.img ? `<img src="${q.img}" style="max-width:100%; border-radius:10px; margin:10px 0;">` : ''}
+                <div class="options">
+                    ${['A','B','C','D'].map((opt, idx) => `
+                        <label class="option">
+                            <input type="radio" name="q${i}" value="${opt}"> ${opt}) ${q.options[idx]}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        if(window.MathJax) MathJax.typesetPromise();
+    }
+
+    function finishQuiz() {
+        alert("Success! Your practice score has been recorded.");
+        window.location.href = 'home.html';
+    }
+
+    function goBack() {
+        if (document.getElementById('quizScreen').style.display === 'block') {
+            location.reload();
+        } else {
+            window.location.href = 'home.html';
+        }
+    }
+</script>
+
+</body>
+</html>
