@@ -3,175 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK | Admin Pro</title>
+    <title>TALAL.TEK | Full Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script>
         window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-            startup: { pageReady: () => MathJax.startup.defaultPageReady() }
+            tex: { inlineMath: [['$', '$']] },
+            options: { enableMenu: false }
         };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
 
     <style>
         :root { --admin-dark: #0f172a; --admin-blue: #3b82f6; --bg: #f1f5f9; --green: #10b981; --red: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
+        
         .sidebar { width: 260px; background: var(--admin-dark); height: 100vh; color: white; padding: 25px; position: fixed; }
         .sidebar h2 { color: var(--admin-blue); border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
         .nav-link { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; margin: 8px 0; border-radius: 10px; transition: 0.3s; cursor: pointer; }
-        .nav-link.active { background: #1e293b; color: var(--admin-blue); }
+        .nav-link:hover, .nav-link.active { background: #1e293b; color: var(--admin-blue); }
+
         .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
         .admin-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 30px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; }
+        
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; font-family: inherit; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
         .math-toolbar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; border-bottom: none; }
         .btn-tool { background: white; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .preview-box { background: #fffbeb; border: 1px dashed #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 15px; min-height: 50px; color: #92400e; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .preview-box { background: #fffbeb; border: 2px dashed #f59e0b; padding: 20px; border-radius: 8px; margin-bottom: 15px; min-height: 50px; }
+
         .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-blue { background: var(--admin-blue); color: white; }
         .btn-green { background: var(--green); color: white; }
-        .btn-green:hover { background: #059669; }
-        .question-card { background: #fff; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .btn-red { background: var(--red); color: white; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        .card-item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <h2>TALAL Admin</h2>
-    <div class="nav-link active"><i class="fas fa-file-signature"></i> Exam Builder</div>
-    <a href="home.html" class="nav-link"><i class="fas fa-home"></i> Student Home</a>
+    <div class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-bullhorn"></i> General Info</div>
+    <div class="nav-link" onclick="showSection('lessons')"><i class="fas fa-video"></i> Lessons</div>
+    <div class="nav-link" onclick="showSection('exams')"><i class="fas fa-file-signature"></i> Exams Builder</div>
+    <a href="home.html" class="nav-link"><i class="fas fa-external-link-alt"></i> Preview Site</a>
 </div>
 
 <div class="main-content">
-    <div class="admin-section">
+
+    <div id="section-dashboard" class="tab-content">
+        <h1>General Settings</h1>
+        <div class="admin-section">
+            <h2><i class="fas fa-bullhorn"></i> Announcement Bar</h2>
+            <textarea id="adText" rows="2" placeholder="Text for the blue bar on student page..."></textarea>
+            <button class="btn btn-blue" onclick="saveNotice()">Update Announcement</button>
+        </div>
+        <div class="admin-section">
+            <h2><i class="fas fa-clock"></i> Global Exam Timer</h2>
+            <input type="number" id="quizDuration" placeholder="Duration in minutes (e.g. 60)">
+            <button class="btn btn-blue" onclick="saveTimer()">Save Timer</button>
+        </div>
+    </div>
+
+    <div id="section-lessons" class="tab-content" style="display:none;">
+        <h1>Manage Lessons</h1>
+        <div class="admin-section">
+            <h2>Add New Video</h2>
+            <div class="grid-2">
+                <input type="text" id="lessonTitle" placeholder="Lesson Title">
+                <input type="text" id="lessonUrl" placeholder="YouTube Video ID or Link">
+            </div>
+            <button class="btn btn-green" onclick="addLesson()">Save Lesson</button>
+        </div>
+        <div class="admin-section">
+            <table id="lessonsTable">
+                <thead><tr><th>Title</th><th>Action</th></tr></thead>
+                <tbody id="lessonsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="section-exams" class="tab-content" style="display:none;">
         <h1>SAT Exam Builder</h1>
-        
-        <label><b>Question Type:</b></label>
-        <select id="qType" onchange="toggleQuestionFields()">
-            <option value="mcq">Multiple Choice (A, B, C, D)</option>
-            <option value="gridin">Grid-in (Numeric Answer)</option>
-        </select>
-
-        <label><b>Question Text:</b></label>
-        <div class="math-toolbar">
-            <button class="btn-tool" onclick="insertMath('\\frac{a}{b}')">Fraction</button>
-            <button class="btn-tool" onclick="insertMath('\\sqrt{x}')">Root</button>
-            <button class="btn-tool" onclick="insertMath('x^{n}')">Power</button>
-            <button class="btn-tool" onclick="insertMath('\\pm')">±</button>
-        </div>
-        <textarea id="qText" oninput="updatePreview()" placeholder="Use $ for math, e.g. $x^2$"></textarea>
-        
-        <div id="mathPreview" class="preview-box">Preview will appear here...</div>
-        
-        <input type="text" id="qImg" placeholder="Image URL (Optional)">
-
-        <div id="mcqFields" class="grid-2">
-            <input type="text" id="optA" placeholder="Option A">
-            <input type="text" id="optB" placeholder="Option B">
-            <input type="text" id="optC" placeholder="Option C">
-            <input type="text" id="optD" placeholder="Option D">
-            <select id="correctMcq">
-                <option value="A">Answer: A</option>
-                <option value="B">Answer: B</option>
-                <option value="C">Answer: C</option>
-                <option value="D">Answer: D</option>
+        <div class="admin-section">
+            <h2>Add New Question</h2>
+            <select id="qType" onchange="toggleFields()">
+                <option value="mcq">Multiple Choice</option>
+                <option value="gridin">Grid-in (Numeric)</option>
             </select>
+
+            <div class="math-toolbar">
+                <button class="btn-tool" onclick="insertMath('\\frac{a}{b}')">Fraction</button>
+                <button class="btn-tool" onclick="insertMath('\\sqrt{x}')">Root</button>
+                <button class="btn-tool" onclick="insertMath('x^{n}')">Power</button>
+            </div>
+            <textarea id="qText" oninput="updatePreview()" placeholder="Question text... use $x^2$ for math"></textarea>
+            
+            <div id="mathPreview" class="preview-box">Preview: ...</div>
+            
+            <input type="text" id="qImg" placeholder="Image URL (Optional)">
+
+            <div id="mcqFields" class="grid-2">
+                <input type="text" id="optA" placeholder="A"> <input type="text" id="optB" placeholder="B">
+                <input type="text" id="optC" placeholder="C"> <input type="text" id="optD" placeholder="D">
+                <select id="correctMcq" style="grid-column: span 2;">
+                    <option value="A">Answer: A</option><option value="B">Answer: B</option>
+                    <option value="C">Answer: C</option><option value="D">Answer: D</option>
+                </select>
+            </div>
+
+            <div id="gridinFields" style="display:none;">
+                <input type="text" id="correctGrid" placeholder="Correct Numeric Answer">
+            </div>
+
+            <button class="btn btn-green" onclick="addQuestion()" style="margin-top:10px;">Save Question</button>
         </div>
 
-        <div id="gridinFields" style="display:none;">
-            <input type="text" id="correctGrid" placeholder="Numeric Answer (e.g. 1.25 or 5/2)">
+        <div class="admin-section">
+            <h2>Saved Questions (<span id="qCount">0</span>)</h2>
+            <div id="qList"></div>
         </div>
-
-        <button class="btn btn-green" onclick="addQuestion()" style="margin-top:15px;"><i class="fas fa-plus"></i> Save Question</button>
     </div>
 
-    <div class="admin-section">
-        <h2>Saved Questions (<span id="qCount">0</span>)</h2>
-        <div id="questionsList"></div>
-    </div>
 </div>
 
 <script>
-    let typingTimer;
+    // التنقل
+    function showSection(id) {
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.getElementById('section-' + id).style.display = 'block';
+        event.currentTarget.classList.add('active');
+    }
 
-    function toggleQuestionFields() {
+    // الإعلانات والوقت
+    function saveNotice() { localStorage.setItem('platform_announcement', document.getElementById('adText').value); alert('Updated!'); }
+    function saveTimer() { localStorage.setItem('quiz_duration', document.getElementById('quizDuration').value); alert('Timer Saved!'); }
+
+    // الدروس
+    function addLesson() {
+        const title = document.getElementById('lessonTitle').value;
+        const url = document.getElementById('lessonUrl').value;
+        if(!title || !url) return;
+        let lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        lessons.push({title, url});
+        localStorage.setItem('added_lessons', JSON.stringify(lessons));
+        renderLessons();
+    }
+
+    function renderLessons() {
+        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        document.getElementById('lessonsBody').innerHTML = lessons.map((l, i) => `
+            <tr><td>${l.title}</td><td><button class="btn-red" style="padding:5px" onclick="deleteItem('added_lessons',${i},renderLessons)">Delete</button></td></tr>
+        `).join('');
+    }
+
+    // الأسئلة والمعاينة
+    function toggleFields() {
         const type = document.getElementById('qType').value;
         document.getElementById('mcqFields').style.display = (type === 'mcq') ? 'grid' : 'none';
         document.getElementById('gridinFields').style.display = (type === 'gridin') ? 'block' : 'none';
     }
 
+    let typingTimer;
     function updatePreview() {
         const text = document.getElementById('qText').value;
         const preview = document.getElementById('mathPreview');
         preview.innerHTML = text.replace(/\n/g, '<br>');
-
         clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                MathJax.typesetPromise([preview]);
-            }
-        }, 600);
+        typingTimer = setTimeout(() => { if(window.MathJax) MathJax.typesetPromise([preview]); }, 600);
     }
 
-    function insertMath(symbol) {
+    function insertMath(s) {
         const area = document.getElementById('qText');
-        const start = area.selectionStart;
-        const formatted = `$${symbol}$`;
-        area.value = area.value.substring(0, start) + formatted + area.value.substring(area.selectionEnd);
+        area.value += `$${s}$`;
         updatePreview();
-        area.focus();
     }
 
     function addQuestion() {
         const type = document.getElementById('qType').value;
-        const qText = document.getElementById('qText').value;
-        if(!qText) return alert("Write the question first!");
-
         const q = {
             type: type,
-            text: qText,
+            text: document.getElementById('qText').value,
             img: document.getElementById('qImg').value,
-            correct: (type === 'mcq') ? document.getElementById('correctMcq').value : document.getElementById('correctGrid').value,
-            options: (type === 'mcq') ? [
-                document.getElementById('optA').value,
-                document.getElementById('optB').value,
-                document.getElementById('optC').value,
-                document.getElementById('optD').value
-            ] : []
+            correct: (type==='mcq')? document.getElementById('correctMcq').value : document.getElementById('correctGrid').value,
+            options: (type==='mcq')? [document.getElementById('optA').value, document.getElementById('optB').value, document.getElementById('optC').value, document.getElementById('optD').value] : []
         };
-
-        let questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
-        questions.push(q);
-        localStorage.setItem('added_questions', JSON.stringify(questions));
-        
+        let qs = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        qs.push(q);
+        localStorage.setItem('added_questions', JSON.stringify(qs));
         renderQuestions();
-        // Clear inputs
-        document.getElementById('qText').value = "";
-        document.getElementById('mathPreview').innerHTML = "...";
-        alert("Question Saved!");
     }
 
     function renderQuestions() {
-        const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
-        document.getElementById('qCount').innerText = questions.length;
-        document.getElementById('questionsList').innerHTML = questions.map((q, i) => `
-            <div class="question-card">
-                <span><b>${i+1}.</b> [${q.type.toUpperCase()}] ${q.text.substring(0,40)}...</span>
-                <button onclick="deleteQ(${i})" style="color:var(--red); border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
+        const qs = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        document.getElementById('qCount').innerText = qs.length;
+        document.getElementById('qList').innerHTML = qs.map((q, i) => `
+            <div class="card-item">
+                <span>#${i+1} [${q.type}] ${q.text.substring(0,30)}...</span>
+                <button class="btn-red" style="padding:5px" onclick="deleteItem('added_questions',${i},renderQuestions)">Delete</button>
             </div>
         `).join('');
     }
 
-    function deleteQ(index) {
-        if(confirm("Delete question?")) {
-            let questions = JSON.parse(localStorage.getItem('added_questions'));
-            questions.splice(index, 1);
-            localStorage.setItem('added_questions', JSON.stringify(questions));
-            renderQuestions();
-        }
+    function deleteItem(key, idx, cb) {
+        let data = JSON.parse(localStorage.getItem(key));
+        data.splice(idx,1);
+        localStorage.setItem(key, JSON.stringify(data));
+        cb();
     }
 
-    window.onload = renderQuestions;
+    window.onload = function() {
+        renderLessons(); renderQuestions();
+        document.getElementById('adText').value = localStorage.getItem('platform_announcement') || "";
+        document.getElementById('quizDuration').value = localStorage.getItem('quiz_duration') || 60;
+    }
 </script>
 </body>
 </html>
