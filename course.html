@@ -5,32 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Lessons - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="data.js"></script>
+
     <style>
         :root { --primary: #3498db; --secondary: #f1c40f; --dark: #1e293b; --bg: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        
         .container { max-width: 850px; margin: auto; }
-        
         .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .back-btn { text-decoration: none; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        
         .unit-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .unit-info { margin-bottom: 20px; }
         .unit-badge { background: #ebf5ff; color: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
         .unit-title { margin: 10px 0; color: var(--dark); font-size: 1.6rem; }
-
         .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; background: #000; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
         .unit-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
         .quiz-status { font-size: 14px; color: #64748b; }
-        
-        .take-quiz-btn { 
-            background: var(--secondary); color: white; text-decoration: none; 
-            padding: 12px 25px; border-radius: 12px; font-weight: bold; 
-            display: flex; align-items: center; gap: 10px; transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
-        }
+        .take-quiz-btn { background: var(--secondary); color: white; text-decoration: none; padding: 12px 25px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); }
         .take-quiz-btn:hover { transform: scale(1.05); background: #d4ac0d; }
     </style>
 </head>
@@ -47,29 +39,30 @@
 </div>
 
 <script>
-    // هذه البيانات كمثال وسنقوم بربطها بلوحة الأدمن لاحقاً
-    const myLessons = [
-        { 
-            unitNum: "Unit 1", 
-            title: "Introduction to Linear Equations", 
-            videoURL: "https://www.youtube.com/embed/dQw4w9WgXcQ" // ضع رابط Embed لليوتيوب
-        },
-        { 
-            unitNum: "Unit 2", 
-            title: "Advanced SAT Functions", 
-            videoURL: "https://www.youtube.com/embed/dQw4w9WgXcQ" 
-        }
-    ];
-
     function renderLessons() {
         const container = document.getElementById('lessonsContainer');
         
-        if (myLessons.length === 0) {
-            container.innerHTML = `<p style="text-align:center; color:#94a3b8;">No lessons uploaded yet.</p>`;
+        // جلب البيانات من الملف المشترك أو الذاكرة المحلية (للطالب والأدمن)
+        let availableLessons = [];
+        
+        // 1. فحص إذا كان هناك بيانات في الملف المشترك (data.js)
+        if (typeof SITE_DATA !== 'undefined' && SITE_DATA.lessons) {
+            availableLessons = SITE_DATA.lessons;
+        } 
+        // 2. إذا لم يجد (مثل حالة الأدمن وهو بيجرب)، يقرأ من الذاكرة المحلية
+        else {
+            availableLessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        }
+
+        if (availableLessons.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 50px;">
+                <i class="fas fa-video-slash" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
+                <p style="color:#94a3b8;">No lessons uploaded yet. Check back soon!</p>
+            </div>`;
             return;
         }
 
-        container.innerHTML = myLessons.map(lesson => `
+        container.innerHTML = availableLessons.map(lesson => `
             <div class="unit-card">
                 <div class="unit-info">
                     <span class="unit-badge">${lesson.unitNum}</span>
@@ -77,7 +70,7 @@
                 </div>
                 
                 <div class="video-box">
-                    <iframe src="${lesson.videoURL}" allowfullscreen></iframe>
+                    <iframe src="${formatYoutubeURL(lesson.videoURL)}" allowfullscreen></iframe>
                 </div>
 
                 <div class="unit-actions">
@@ -92,7 +85,18 @@
         `).join('');
     }
 
-    // تشغيل الدالة عند التحميل
+    // وظيفة لتصحيح روابط اليوتيوب لتناسب الـ Embed
+    function formatYoutubeURL(url) {
+        if (url.includes('youtube.com/embed/')) return url;
+        if (url.includes('watch?v=')) {
+            return url.replace('watch?v=', 'embed/');
+        }
+        if (url.includes('youtu.be/')) {
+            return url.replace('youtu.be/', 'youtube.com/embed/');
+        }
+        return url;
+    }
+
     window.onload = renderLessons;
 </script>
 
