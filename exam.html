@@ -6,114 +6,82 @@
     <title>TALAL.TEK - SAT Practice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$']] },
-            options: { enableMenu: false }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root { 
-            --primary: #3498db; 
-            --dark: #1e293b; 
-            --bg: #f1f5f9; 
-            --green: #10b981; 
-            --red: #ef4444; 
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark); }
+        :root { --primary: #3498db; --dark: #1e293b; --bg: #f1f5f9; --green: #10b981; --red: #ef4444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
         .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        /* شريط الأدوات العلوي */
         .info-bar { 
             display: flex; justify-content: space-between; align-items: center; 
             background: #fff; padding: 15px 25px; border-radius: 15px; 
             margin-bottom: 25px; border: 1px solid #e2e8f0; position: sticky; top: 10px; z-index: 100;
         }
 
-        .calc-btn { 
-            background: var(--dark); color: white; border: none; padding: 8px 18px; 
-            border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;
-        }
+        .calc-btn { background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
-        .timer { font-weight: bold; font-size: 1.2rem; color: var(--red); display: flex; align-items: center; gap: 8px; }
-
-        /* تنسيق السؤال */
-        .question-block { 
-            margin-bottom: 30px; padding: 25px; background: #fff; 
-            border-radius: 15px; border: 1px solid #e2e8f0; 
-        }
-
-        .opt-label { 
-            display: flex; align-items: center; gap: 12px; padding: 15px; 
-            border: 1px solid #edf2f7; border-radius: 12px; cursor: pointer; margin-top: 10px; 
-        }
-        .opt-label:hover { border-color: var(--primary); background: #f8fafc; }
-
-        /* مربع إدخال Grid-in */
-        .grid-in-box {
-            width: 100%; max-width: 250px; padding: 15px; border: 2px solid #e2e8f0;
-            border-radius: 12px; font-size: 1.2rem; font-weight: bold; margin-top: 10px; outline: none;
-        }
-
-        /* التصحيح والمراجعة */
-        .correct-opt { background: #ecfdf5 !important; border-color: var(--green) !important; color: var(--green) !important; font-weight: bold; }
-        .wrong-opt { background: #fef2f2 !important; border-color: var(--red) !important; color: var(--red) !important; }
-
-        /* نافذة الآلة الحاسبة */
+        /* نافذة الآلة الحاسبة المحسنة */
         #calcModal {
-            display: none; position: fixed; top: 80px; right: 20px;
-            width: 400px; background: white; border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 2000; border: 1px solid #ccc;
+            display: none; position: fixed; top: 100px; right: 50px;
+            width: 450px; height: 500px; background: white; border-radius: 15px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4); z-index: 9999; overflow: hidden;
+            border: 2px solid var(--dark); resize: both; 
         }
-        .calc-header { background: var(--dark); color: white; padding: 12px; display: flex; justify-content: space-between; border-radius: 15px 15px 0 0; }
+        .calc-header { 
+            background: var(--dark); color: white; padding: 12px; 
+            display: flex; justify-content: space-between; cursor: move; 
+        }
+
+        .question-block { margin-bottom: 30px; padding: 25px; background: #fff; border-radius: 15px; border: 1px solid #e2e8f0; }
+        .opt-label { display: flex; align-items: center; gap: 12px; padding: 15px; border: 1px solid #edf2f7; border-radius: 12px; cursor: pointer; margin-top: 10px; }
+        .correct-opt { background: #ecfdf5 !important; border-color: var(--green) !important; color: #065f46 !important; font-weight: bold; }
+        .wrong-opt { background: #fef2f2 !important; border-color: var(--red) !important; color: #991b1b !important; }
+        .grid-in-box { width: 100%; max-width: 200px; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.2rem; }
 
         .submit-btn { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-
-        #resultArea { display: none; text-align: center; padding: 40px; }
-        .score-circle { width: 150px; height: 150px; line-height: 150px; border-radius: 50%; background: var(--primary); color: white; font-size: 2.5rem; margin: 20px auto; font-weight: bold; }
+        #resultArea { display: none; text-align: center; }
+        .score-circle { width: 120px; height: 120px; line-height: 120px; border-radius: 50%; background: var(--primary); color: white; font-size: 2rem; margin: 20px auto; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container" id="quizWrapper">
     <div class="info-bar">
-        <button class="calc-btn" onclick="toggleCalc()"><i class="fas fa-calculator"></i> Desmos Calculator</button>
-        <div class="timer" id="timerDisplay"><i class="fas fa-clock"></i> <span id="timeLeft">--:--</span></div>
-        <a href="home.html" style="text-decoration:none; color: #64748b; font-weight:600;"><i class="fas fa-times"></i> Exit</a>
+        <button class="calc-btn" onclick="toggleCalc()"><i class="fas fa-calculator"></i> Open Calculator</button>
+        <div style="font-weight:bold; color:var(--red);" id="timerDisplay">00:00</div>
+        <a href="home.html" style="text-decoration:none; color:#666;"><i class="fas fa-times"></i> Exit</a>
     </div>
     
     <div id="quizContent"></div>
-
-    <button class="submit-btn" id="finalSubmitBtn" onclick="processQuiz()">
-        <i class="fas fa-paper-plane"></i> Submit Answers
-    </button>
+    <button class="submit-btn" onclick="processQuiz()">Finish Exam</button>
 </div>
 
 <div id="calcModal">
-    <div class="calc-header">
-        <span>Scientific Calculator</span>
+    <div class="calc-header" id="calcHeader">
+        <span><i class="fas fa-grip-lines"></i> Drag to Move</span>
         <i class="fas fa-times" onclick="toggleCalc()" style="cursor:pointer;"></i>
     </div>
-    <iframe src="https://www.desmos.com/scientific" style="width:100%; height:450px; border:none;"></iframe>
+    <iframe src="https://www.desmos.com/scientific?embed" style="width:100%; height:calc(100% - 40px); border:none;"></iframe>
 </div>
 
 <div class="container" id="resultArea">
-    <h2 style="font-size: 2rem;">Quiz Finished!</h2>
     <div class="score-circle" id="scoreValue">0%</div>
-    <p id="detailedScore" style="font-size: 1.2rem;"></p>
-    <button onclick="window.scrollTo(0,0); document.getElementById('resultArea').style.display='none'; document.getElementById('quizWrapper').style.display='block';" class="submit-btn" style="background:#64748b;">Review Your Answers</button>
+    <p id="detailedScore"></p>
+    <button onclick="location.reload()" class="submit-btn" style="background:#666;">Review Answers</button>
 </div>
 
 <script>
-    let timeLeft; let timerInterval; let questionsData = [];
+    let questionsData = [];
+    let timeLeft;
 
     window.onload = function() {
-        const savedTime = parseInt(localStorage.getItem('quiz_duration')) || 10;
+        const savedTime = parseInt(localStorage.getItem('quiz_duration')) || 15;
         timeLeft = savedTime * 60;
         loadQuiz();
         startTimer();
+        makeDraggable(document.getElementById("calcModal"));
     };
 
     function toggleCalc() {
@@ -122,11 +90,11 @@
     }
 
     function startTimer() {
-        timerInterval = setInterval(() => {
+        const timerInt = setInterval(() => {
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
-            document.getElementById('timeLeft').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-            if (timeLeft <= 0) processQuiz();
+            document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if (timeLeft <= 0) { clearInterval(timerInt); processQuiz(); }
             timeLeft--;
         }, 1000);
     }
@@ -134,25 +102,24 @@
     function loadQuiz() {
         questionsData = JSON.parse(localStorage.getItem('added_questions') || '[]');
         const container = document.getElementById('quizContent');
-        if(questionsData.length === 0) return container.innerHTML = "<p style='text-align:center;'>No questions available.</p>";
+        if(!questionsData.length) return container.innerHTML = "No questions found.";
 
         questionsData.forEach((q, i) => {
             const div = document.createElement('div');
             div.className = 'question-block';
             div.innerHTML = `
                 <p style="color:var(--primary); font-weight:bold;">Question ${i+1}</p>
-                <div class="q-text">${q.text}</div>
-                ${q.img ? `<img src="${q.img}" style="max-width:100%; border-radius:10px; margin:15px 0;">` : ''}
-                <div id="ans-zone-${i}">
+                <div>${q.text}</div>
+                ${q.img ? `<img src="${q.img}" style="max-width:100%; margin-top:10px;">` : ''}
+                <div style="margin-top:15px;">
                     ${q.type === 'mcq' ? 
                         ['A','B','C','D'].map((l, idx) => `
                             <label class="opt-label" id="label-${i}-${l}">
-                                <input type="radio" name="q${i}" value="${l}"> <b>${l})</b> ${q.options[idx]}
+                                <input type="radio" name="q${i}" value="${l}"> ${l}) ${q.options[idx]}
                             </label>`).join('') :
-                        `<input type="text" class="grid-in-box" id="grid-${i}" placeholder="Enter numeric value">`
+                        `<input type="text" class="grid-in-box" id="grid-${i}" placeholder="Enter answer...">`
                     }
                 </div>
-                <div id="feedback-${i}" style="margin-top:15px; font-weight:bold; display:none; padding:10px; border-radius:8px;"></div>
             `;
             container.appendChild(div);
         });
@@ -160,33 +127,41 @@
     }
 
     function processQuiz() {
-        clearInterval(timerInterval);
         let score = 0;
         questionsData.forEach((q, i) => {
             let sAns = q.type === 'mcq' ? (document.querySelector(`input[name="q${i}"]:checked`)?.value || "") : document.getElementById(`grid-${i}`).value.trim();
-            let isCorrect = sAns.toString().toLowerCase() === q.correct.toString().toLowerCase();
+            let isCorrect = sAns.toLowerCase() === q.correct.toLowerCase();
             
             if(q.type === 'mcq') {
                 document.getElementById(`label-${i}-${q.correct}`).classList.add('correct-opt');
                 if(sAns && !isCorrect) document.getElementById(`label-${i}-${sAns}`).classList.add('wrong-opt');
-                document.querySelectorAll(`input[name="q${i}"]`).forEach(inp => inp.disabled = true);
             } else {
-                const input = document.getElementById(`grid-${i}`);
-                input.disabled = true;
-                input.classList.add(isCorrect ? 'correct-opt' : 'wrong-opt');
+                document.getElementById(`grid-${i}`).classList.add(isCorrect ? 'correct-opt' : 'wrong-opt');
             }
-
-            const feedback = document.getElementById(`feedback-${i}`);
-            feedback.style.display = "block";
-            feedback.style.background = isCorrect ? "#ecfdf5" : "#fef2f2";
-            feedback.innerHTML = `Correct Answer: ${q.correct}`;
             if(isCorrect) score++;
         });
 
         document.getElementById('quizWrapper').style.display = 'none';
         document.getElementById('resultArea').style.display = 'block';
         document.getElementById('scoreValue').innerText = Math.round((score/questionsData.length)*100) + "%";
-        document.getElementById('detailedScore').innerText = `You answered ${score} out of ${questionsData.length} correctly.`;
+        document.getElementById('detailedScore').innerText = `Result: ${score} / ${questionsData.length}`;
+    }
+
+    // دالة جعل النافذة قابلة للسحب (Drag)
+    function makeDraggable(el) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        document.getElementById("calcHeader").onmousedown = (e) => {
+            e.preventDefault();
+            pos3 = e.clientX; pos4 = e.clientY;
+            document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+            document.onmousemove = (e) => {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+                pos3 = e.clientX; pos4 = e.clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+            };
+        };
     }
 </script>
 </body>
