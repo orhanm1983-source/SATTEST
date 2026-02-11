@@ -1,227 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK | Full Admin Panel</title>
+    <title>Admin Dashboard - TALAL.TEK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$']] },
-            options: { enableMenu: false }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
-
     <style>
-        :root { --admin-dark: #0f172a; --admin-blue: #3b82f6; --bg: #f1f5f9; --green: #10b981; --red: #ef4444; }
+        :root { --primary: #3498db; --dark: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
         
-        .sidebar { width: 260px; background: var(--admin-dark); height: 100vh; color: white; padding: 25px; position: fixed; }
-        .sidebar h2 { color: var(--admin-blue); border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
-        .nav-link { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; margin: 8px 0; border-radius: 10px; transition: 0.3s; cursor: pointer; }
-        .nav-link:hover, .nav-link.active { background: #1e293b; color: var(--admin-blue); }
+        /* Sidebar */
+        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; color: var(--primary); }
+        .nav-item { padding: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 10px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .nav-item:hover, .nav-item.active { background: var(--primary); }
 
-        .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
-        .admin-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 30px; }
+        /* Main Content */
+        .main-content { margin-left: 280px; padding: 40px; width: calc(100% - 280px); }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
         
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; font-family: inherit; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--dark); }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
         
-        .math-toolbar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; border-bottom: none; }
-        .btn-tool { background: white; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .preview-box { background: #fffbeb; border: 2px dashed #f59e0b; padding: 20px; border-radius: 8px; margin-bottom: 15px; min-height: 50px; }
-
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-blue { background: var(--admin-blue); color: white; }
-        .btn-green { background: var(--green); color: white; }
-        .btn-red { background: var(--red); color: white; }
+        .btn-save { background: var(--primary); color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-        .card-item { background: white; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .table-area { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table-area th, .table-area td { padding: 12px; border: 1px solid #e2e8f0; text-align: left; }
+        .table-area th { background: #f8fafc; }
+        .btn-delete { color: #e74c3c; cursor: pointer; border: none; background: none; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>TALAL Admin</h2>
-    <div class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-bullhorn"></i> General Info</div>
-    <div class="nav-link" onclick="showSection('lessons')"><i class="fas fa-video"></i> Lessons</div>
-    <div class="nav-link" onclick="showSection('exams')"><i class="fas fa-file-signature"></i> Exams Builder</div>
-    <a href="home.html" class="nav-link"><i class="fas fa-external-link-alt"></i> Preview Site</a>
+    <h2><i class="fas fa-user-shield"></i> TALAL Admin</h2>
+    <div class="nav-item active" onclick="showSection('questionsSec')"><i class="fas fa-pen"></i> Add Questions</div>
+    <div class="nav-item" onclick="showSection('videosSec')"><i class="fas fa-video"></i> Manage Lessons</div>
 </div>
 
 <div class="main-content">
-
-    <div id="section-dashboard" class="tab-content">
-        <h1>General Settings</h1>
-        <div class="admin-section">
-            <h2><i class="fas fa-bullhorn"></i> Announcement Bar</h2>
-            <textarea id="adText" rows="2" placeholder="Text for the blue bar on student page..."></textarea>
-            <button class="btn btn-blue" onclick="saveNotice()">Update Announcement</button>
-        </div>
-        <div class="admin-section">
-            <h2><i class="fas fa-clock"></i> Global Exam Timer</h2>
-            <input type="number" id="quizDuration" placeholder="Duration in minutes (e.g. 60)">
-            <button class="btn btn-blue" onclick="saveTimer()">Save Timer</button>
-        </div>
-    </div>
-
-    <div id="section-lessons" class="tab-content" style="display:none;">
-        <h1>Manage Lessons</h1>
-        <div class="admin-section">
-            <h2>Add New Video</h2>
-            <div class="grid-2">
-                <input type="text" id="lessonTitle" placeholder="Lesson Title">
-                <input type="text" id="lessonUrl" placeholder="YouTube Video ID or Link">
-            </div>
-            <button class="btn btn-green" onclick="addLesson()">Save Lesson</button>
-        </div>
-        <div class="admin-section">
-            <table id="lessonsTable">
-                <thead><tr><th>Title</th><th>Action</th></tr></thead>
-                <tbody id="lessonsBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="section-exams" class="tab-content" style="display:none;">
-        <h1>SAT Exam Builder</h1>
-        <div class="admin-section">
-            <h2>Add New Question</h2>
-            <select id="qType" onchange="toggleFields()">
-                <option value="mcq">Multiple Choice</option>
-                <option value="gridin">Grid-in (Numeric)</option>
+    <div id="questionsSec" class="card">
+        <h3>Add New Question</h3>
+        <div class="form-group">
+            <label>Select Unit</label>
+            <select id="qUnit">
+                <option value="Unit 1">Unit 1: Linear Equations</option>
+                <option value="Unit 2">Unit 2: Functions</option>
+                <option value="Unit 3">Unit 3: Geometry</option>
+                <option value="Unit 4">Unit 4: Data Analysis</option>
             </select>
-
-            <div class="math-toolbar">
-                <button class="btn-tool" onclick="insertMath('\\frac{a}{b}')">Fraction</button>
-                <button class="btn-tool" onclick="insertMath('\\sqrt{x}')">Root</button>
-                <button class="btn-tool" onclick="insertMath('x^{n}')">Power</button>
-            </div>
-            <textarea id="qText" oninput="updatePreview()" placeholder="Question text... use $x^2$ for math"></textarea>
-            
-            <div id="mathPreview" class="preview-box">Preview: ...</div>
-            
-            <input type="text" id="qImg" placeholder="Image URL (Optional)">
-
-            <div id="mcqFields" class="grid-2">
-                <input type="text" id="optA" placeholder="A"> <input type="text" id="optB" placeholder="B">
-                <input type="text" id="optC" placeholder="C"> <input type="text" id="optD" placeholder="D">
-                <select id="correctMcq" style="grid-column: span 2;">
-                    <option value="A">Answer: A</option><option value="B">Answer: B</option>
-                    <option value="C">Answer: C</option><option value="D">Answer: D</option>
-                </select>
-            </div>
-
-            <div id="gridinFields" style="display:none;">
-                <input type="text" id="correctGrid" placeholder="Correct Numeric Answer">
-            </div>
-
-            <button class="btn btn-green" onclick="addQuestion()" style="margin-top:10px;">Save Question</button>
         </div>
-
-        <div class="admin-section">
-            <h2>Saved Questions (<span id="qCount">0</span>)</h2>
-            <div id="qList"></div>
+        <div class="form-group">
+            <label>Question Text (Supports LaTeX)</label>
+            <textarea id="qText" rows="3" placeholder="e.g. Solve: $x + 5 = 10$"></textarea>
         </div>
+        <div class="form-group">
+            <label>Options (A, B, C, D)</label>
+            <input type="text" id="optA" placeholder="Option A" style="margin-bottom: 5px;">
+            <input type="text" id="optB" placeholder="Option B" style="margin-bottom: 5px;">
+            <input type="text" id="optC" placeholder="Option C" style="margin-bottom: 5px;">
+            <input type="text" id="optD" placeholder="Option D">
+        </div>
+        <button class="btn-save" onclick="saveQuestion()">Save Question</button>
     </div>
 
+    <div id="videosSec" class="card" style="display:none;">
+        <h3>Manage Video Lessons</h3>
+        <div class="form-group">
+            <label>Unit Number</label>
+            <input type="text" id="vUnit" placeholder="e.g. Unit 1">
+        </div>
+        <div class="form-group">
+            <label>Lesson Title</label>
+            <input type="text" id="vTitle" placeholder="e.g. Introduction to Slopes">
+        </div>
+        <div class="form-group">
+            <label>YouTube Embed Link</label>
+            <input type="text" id="vUrl" placeholder="https://www.youtube.com/embed/XXXXXX">
+        </div>
+        <button class="btn-save" onclick="saveVideo()" style="background: #2ecc71;">Add Lesson</button>
+    </div>
+
+    <div class="card">
+        <h3>Current Items</h3>
+        <table class="table-area" id="itemsTable">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Unit</th>
+                    <th>Title/Text</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    // التنقل
     function showSection(id) {
-        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.getElementById('section-' + id).style.display = 'block';
-        event.currentTarget.classList.add('active');
+        document.getElementById('questionsSec').style.display = 'none';
+        document.getElementById('videosSec').style.display = 'none';
+        document.getElementById(id).style.display = 'block';
     }
 
-    // الإعلانات والوقت
-    function saveNotice() { localStorage.setItem('platform_announcement', document.getElementById('adText').value); alert('Updated!'); }
-    function saveTimer() { localStorage.setItem('quiz_duration', document.getElementById('quizDuration').value); alert('Timer Saved!'); }
-
-    // الدروس
-    function addLesson() {
-        const title = document.getElementById('lessonTitle').value;
-        const url = document.getElementById('lessonUrl').value;
-        if(!title || !url) return;
-        let lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        lessons.push({title, url});
-        localStorage.setItem('added_lessons', JSON.stringify(lessons));
-        renderLessons();
-    }
-
-    function renderLessons() {
-        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        document.getElementById('lessonsBody').innerHTML = lessons.map((l, i) => `
-            <tr><td>${l.title}</td><td><button class="btn-red" style="padding:5px" onclick="deleteItem('added_lessons',${i},renderLessons)">Delete</button></td></tr>
-        `).join('');
-    }
-
-    // الأسئلة والمعاينة
-    function toggleFields() {
-        const type = document.getElementById('qType').value;
-        document.getElementById('mcqFields').style.display = (type === 'mcq') ? 'grid' : 'none';
-        document.getElementById('gridinFields').style.display = (type === 'gridin') ? 'block' : 'none';
-    }
-
-    let typingTimer;
-    function updatePreview() {
-        const text = document.getElementById('qText').value;
-        const preview = document.getElementById('mathPreview');
-        preview.innerHTML = text.replace(/\n/g, '<br>');
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => { if(window.MathJax) MathJax.typesetPromise([preview]); }, 600);
-    }
-
-    function insertMath(s) {
-        const area = document.getElementById('qText');
-        area.value += `$${s}$`;
-        updatePreview();
-    }
-
-    function addQuestion() {
-        const type = document.getElementById('qType').value;
-        const q = {
-            type: type,
+    // حفظ الأسئلة
+    function saveQuestion() {
+        const question = {
+            id: Date.now(),
+            unit: document.getElementById('qUnit').value,
             text: document.getElementById('qText').value,
-            img: document.getElementById('qImg').value,
-            correct: (type==='mcq')? document.getElementById('correctMcq').value : document.getElementById('correctGrid').value,
-            options: (type==='mcq')? [document.getElementById('optA').value, document.getElementById('optB').value, document.getElementById('optC').value, document.getElementById('optD').value] : []
+            options: [
+                document.getElementById('optA').value,
+                document.getElementById('optB').value,
+                document.getElementById('optC').value,
+                document.getElementById('optD').value
+            ],
+            type: 'question'
         };
-        let qs = JSON.parse(localStorage.getItem('added_questions') || '[]');
-        qs.push(q);
-        localStorage.setItem('added_questions', JSON.stringify(qs));
-        renderQuestions();
+
+        let db = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        db.push(question);
+        localStorage.setItem('added_questions', JSON.stringify(db));
+        alert("Question Saved to " + question.unit);
+        renderTable();
     }
 
-    function renderQuestions() {
-        const qs = JSON.parse(localStorage.getItem('added_questions') || '[]');
-        document.getElementById('qCount').innerText = qs.length;
-        document.getElementById('qList').innerHTML = qs.map((q, i) => `
-            <div class="card-item">
-                <span>#${i+1} [${q.type}] ${q.text.substring(0,30)}...</span>
-                <button class="btn-red" style="padding:5px" onclick="deleteItem('added_questions',${i},renderQuestions)">Delete</button>
-            </div>
-        `).join('');
+    // حفظ الفيديوهات
+    function saveVideo() {
+        const video = {
+            id: Date.now(),
+            unitNum: document.getElementById('vUnit').value,
+            title: document.getElementById('vTitle').value,
+            videoURL: document.getElementById('vUrl').value,
+            type: 'video'
+        };
+
+        let db = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        db.push(video);
+        localStorage.setItem('added_lessons', JSON.stringify(db));
+        alert("Video Lesson Added!");
+        renderTable();
     }
 
-    function deleteItem(key, idx, cb) {
-        let data = JSON.parse(localStorage.getItem(key));
-        data.splice(idx,1);
-        localStorage.setItem(key, JSON.stringify(data));
-        cb();
+    function renderTable() {
+        const qDb = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        const vDb = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+
+        vDb.forEach(v => {
+            body.innerHTML += `<tr><td>Video</td><td>${v.unitNum}</td><td>${v.title}</td><td><button onclick="deleteItem(${v.id}, 'video')" class="btn-delete">Delete</button></td></tr>`;
+        });
+        qDb.forEach(q => {
+            body.innerHTML += `<tr><td>Question</td><td>${q.unit}</td><td>${q.text.substring(0,20)}...</td><td><button onclick="deleteItem(${q.id}, 'question')" class="btn-delete">Delete</button></td></tr>`;
+        });
     }
 
-    window.onload = function() {
-        renderLessons(); renderQuestions();
-        document.getElementById('adText').value = localStorage.getItem('platform_announcement') || "";
-        document.getElementById('quizDuration').value = localStorage.getItem('quiz_duration') || 60;
+    function deleteItem(id, type) {
+        let key = (type === 'video') ? 'added_lessons' : 'added_questions';
+        let db = JSON.parse(localStorage.getItem(key));
+        db = db.filter(item => item.id !== id);
+        localStorage.setItem(key, JSON.stringify(db));
+        renderTable();
     }
+
+    window.onload = renderTable;
 </script>
 </body>
 </html>
