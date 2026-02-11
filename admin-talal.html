@@ -3,221 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK | Pro Admin Panel</title>
+    <title>TALAL.TEK | Admin Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root { --admin-dark: #0f172a; --admin-blue: #3b82f6; --bg: #f1f5f9; --green: #10b981; --red: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
-        
-        /* Sidebar */
         .sidebar { width: 260px; background: var(--admin-dark); height: 100vh; color: white; padding: 25px; position: fixed; }
         .sidebar h2 { color: var(--admin-blue); border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
         .nav-link { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; margin: 8px 0; border-radius: 10px; transition: 0.3s; cursor: pointer; }
-        .nav-link:hover, .nav-link.active { background: #1e293b; color: var(--admin-blue); }
-
-        /* Content Area */
+        .nav-link.active { background: #1e293b; color: var(--admin-blue); }
         .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
         .admin-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 30px; }
-        
-        h2 { font-size: 1.3rem; color: var(--admin-dark); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; }
+        .math-toolbar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; border-bottom: none; }
+        .btn-tool { background: white; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 5px; cursor: pointer; }
+        .preview-box { background: #fffbeb; border: 1px dashed #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 15px; min-height: 40px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; font-family: inherit; }
-        
-        /* Math Toolbar Styling */
-        .math-toolbar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px 8px 0 0; border-bottom: none; flex-wrap: wrap; }
-        .btn-tool { background: white; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; transition: 0.2s; font-weight: bold; }
-        .btn-tool:hover { background: var(--admin-blue); color: white; }
-        textarea#qText { border-top-left-radius: 0; border-top-right-radius: 0; min-height: 100px; }
-
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-blue { background: var(--admin-blue); color: white; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; }
         .btn-green { background: var(--green); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-        .delete-btn { color: var(--red); cursor: pointer; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <h2>TALAL Admin</h2>
-    <div class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
-    <div class="nav-link" onclick="showSection('lessons')"><i class="fas fa-video"></i> Lessons</div>
-    <div class="nav-link" onclick="showSection('exams')"><i class="fas fa-file-signature"></i> Exams Settings</div>
-    <a href="home.html" class="nav-link"><i class="fas fa-external-link-alt"></i> Preview as Student</a>
+    <div class="nav-link active" onclick="showSection('exams')"><i class="fas fa-file-signature"></i> Exam Builder</div>
+    <div class="nav-link" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i> Settings</div>
+    <a href="home.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
 </div>
 
 <div class="main-content">
-    
-    <div id="section-dashboard" class="content-tab">
-        <h1>Dashboard Overview</h1>
-        <div class="admin-section">
-            <h2><i class="fas fa-bullhorn"></i> Global Announcement</h2>
-            <textarea id="adText" rows="3" placeholder="Message for students..."></textarea>
-            <button class="btn btn-blue" onclick="publishNotice()"><i class="fas fa-check"></i> Update</button>
-        </div>
+    <div id="section-exams" class="content-tab">
+        <h1>SAT Exam Builder</h1>
         
         <div class="admin-section">
-            <h2><i class="fas fa-clock"></i> Global Exam Timer</h2>
-            <label>Exam Duration (Minutes):</label>
-            <input type="number" id="quizDuration" placeholder="e.g. 30" min="1">
-            <button class="btn btn-blue" onclick="saveQuizSettings()">Save Timer</button>
-        </div>
-    </div>
-
-    <div id="section-lessons" class="content-tab" style="display:none;">
-        <h1>Manage Lessons</h1>
-        <div class="admin-section">
-            <h2><i class="fas fa-plus-circle"></i> Add New Lesson</h2>
-            <div class="grid-2">
-                <input type="text" id="lessonTitle" placeholder="Title">
-                <input type="text" id="lessonUrl" placeholder="YouTube URL">
-            </div>
-            <button class="btn btn-green" onclick="addLesson()"><i class="fas fa-save"></i> Save Lesson</button>
-        </div>
-        <div class="admin-section">
-            <table id="lessonsTable">
-                <thead><tr><th>Lesson Title</th><th>Action</th></tr></thead>
-                <tbody id="lessonsBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="section-exams" class="content-tab" style="display:none;">
-        <h1>Exam Builder</h1>
-        <div class="admin-section">
-            <h2><i class="fas fa-pencil-alt"></i> Create Question</h2>
+            <h2><i class="fas fa-plus-circle"></i> Create New Question</h2>
             
+            <label>Question Type:</label>
+            <select id="qType" onchange="toggleQuestionFields()">
+                <option value="mcq">Multiple Choice (A, B, C, D)</option>
+                <option value="gridin">Grid-in (Numeric Answer)</option>
+            </select>
+
             <div class="math-toolbar">
                 <button class="btn-tool" onclick="insertMath('\\frac{a}{b}')">$\frac{a}{b}$</button>
                 <button class="btn-tool" onclick="insertMath('\\sqrt{x}')">$\sqrt{x}$</button>
                 <button class="btn-tool" onclick="insertMath('x^{n}')">$x^n$</button>
-                <button class="btn-tool" onclick="insertMath('\\pi')">$\pi$</button>
-                <button class="btn-tool" onclick="insertMath('\\pm')">$\pm$</button>
-                <button class="btn-tool" onclick="insertMath('\\neq')">$\neq$</button>
-                <button class="btn-tool" onclick="insertMath('\\leq')">$\leq$</button>
-                <button class="btn-tool" onclick="insertMath('\\geq')">$\geq$</button>
             </div>
-            <textarea id="qText" placeholder="Type your question here... use the toolbar for math symbols."></textarea>
+            <textarea id="qText" oninput="updatePreview()" placeholder="Type question text here..."></textarea>
             
-            <input type="text" id="qImg" placeholder="Image URL (if any)">
+            <div class="preview-box" id="mathPreview">Preview: (Math equations will render here)</div>
             
-            <div class="grid-2">
+            <input type="text" id="qImg" placeholder="Image URL (Optional)">
+
+            <div id="mcqFields" class="grid-2">
                 <input type="text" id="optA" placeholder="Option A">
                 <input type="text" id="optB" placeholder="Option B">
                 <input type="text" id="optC" placeholder="Option C">
                 <input type="text" id="optD" placeholder="Option D">
+                <select id="correctMcq">
+                    <option value="A">Correct: A</option>
+                    <option value="B">Correct: B</option>
+                    <option value="C">Correct: C</option>
+                    <option value="D">Correct: D</option>
+                </select>
             </div>
-            
-            <label>Correct Choice:</label>
-            <select id="correctOpt">
-                <option value="A">Choice A</option>
-                <option value="B">Choice B</option>
-                <option value="C">Choice C</option>
-                <option value="D">Choice D</option>
-            </select>
-            
-            <button class="btn btn-green" onclick="addQuestion()"><i class="fas fa-plus"></i> Add Question</button>
+
+            <div id="gridinFields" style="display:none;">
+                <input type="text" id="correctGrid" placeholder="Enter correct numeric answer (e.g. 5, 2/3, 1.5)">
+            </div>
+
+            <button class="btn btn-green" onclick="addQuestion()" style="margin-top:15px;"><i class="fas fa-plus"></i> Add to Exam</button>
         </div>
 
         <div class="admin-section">
-            <h2>Current Exam Questions (<span id="qCount">0</span>)</h2>
+            <h2>Current Questions (<span id="qCount">0</span>)</h2>
             <div id="questionsList"></div>
         </div>
     </div>
 </div>
 
 <script>
-    function showSection(sec) {
-        document.querySelectorAll('.content-tab').forEach(d => d.style.display = 'none');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.getElementById('section-' + sec).style.display = 'block';
-        event.currentTarget.classList.add('active');
+    function toggleQuestionFields() {
+        const type = document.getElementById('qType').value;
+        document.getElementById('mcqFields').style.display = (type === 'mcq') ? 'grid' : 'none';
+        document.getElementById('gridinFields').style.display = (type === 'gridin') ? 'block' : 'none';
     }
 
-    // إدراج الرموز الرياضية
+    function updatePreview() {
+        const text = document.getElementById('qText').value;
+        const preview = document.getElementById('mathPreview');
+        preview.innerText = text;
+        if (window.MathJax) {
+            MathJax.typesetPromise([preview]);
+        }
+    }
+
     function insertMath(symbol) {
         const area = document.getElementById('qText');
         const start = area.selectionStart;
-        const text = area.value;
         const formatted = `$${symbol}$`;
-        area.value = text.substring(0, start) + formatted + text.substring(area.selectionEnd);
-        area.focus();
-        area.selectionStart = area.selectionEnd = start + formatted.length;
-    }
-
-    function publishNotice() {
-        localStorage.setItem('platform_announcement', document.getElementById('adText').value);
-        alert('Announcement Updated!');
-    }
-
-    function saveQuizSettings() {
-        localStorage.setItem('quiz_duration', document.getElementById('quizDuration').value);
-        alert('Timer Updated!');
-    }
-
-    function addLesson() {
-        const title = document.getElementById('lessonTitle').value;
-        const url = document.getElementById('lessonUrl').value;
-        if(!title || !url) return alert('Fill all fields');
-        let lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        lessons.push({title, url});
-        localStorage.setItem('added_lessons', JSON.stringify(lessons));
-        renderLessons();
-        document.getElementById('lessonTitle').value = ""; document.getElementById('lessonUrl').value = "";
-    }
-
-    function renderLessons() {
-        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-        document.getElementById('lessonsBody').innerHTML = lessons.map((l, i) => `
-            <tr><td>${l.title}</td><td><i class="fas fa-trash delete-btn" onclick="deleteItem('added_lessons', ${i}, renderLessons)"></i></td></tr>
-        `).join('');
+        area.value = area.value.substring(0, start) + formatted + area.value.substring(area.selectionEnd);
+        updatePreview();
     }
 
     function addQuestion() {
+        const type = document.getElementById('qType').value;
         const q = {
+            type: type,
             text: document.getElementById('qText').value,
             img: document.getElementById('qImg').value,
-            options: [document.getElementById('optA').value, document.getElementById('optB').value, document.getElementById('optC').value, document.getElementById('optD').value],
-            correct: document.getElementById('correctOpt').value
+            correct: (type === 'mcq') ? document.getElementById('correctMcq').value : document.getElementById('correctGrid').value,
+            options: (type === 'mcq') ? [
+                document.getElementById('optA').value,
+                document.getElementById('optB').value,
+                document.getElementById('optC').value,
+                document.getElementById('optD').value
+            ] : []
         };
+
         let questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
         questions.push(q);
         localStorage.setItem('added_questions', JSON.stringify(questions));
         renderQuestions();
-        ['qText', 'qImg', 'optA', 'optB', 'optC', 'optD'].forEach(id => document.getElementById(id).value = "");
+        alert("Question Added!");
     }
 
     function renderQuestions() {
         const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
         document.getElementById('qCount').innerText = questions.length;
         document.getElementById('questionsList').innerHTML = questions.map((q, i) => `
-            <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                <span>${i+1}. ${q.text.substring(0,50)}...</span>
-                <i class="fas fa-trash delete-btn" onclick="deleteItem('added_questions', ${i}, renderQuestions)"></i>
+            <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                <span>${i+1}. [${q.type.toUpperCase()}] ${q.text.substring(0,30)}...</span>
+                <button onclick="deleteQ(${i})" style="color:red; border:none; background:none; cursor:pointer;"><i class="fas fa-trash"></i></button>
             </div>
         `).join('');
     }
 
-    function deleteItem(key, index, callback) {
-        if(confirm('Confirm Delete?')) {
-            let data = JSON.parse(localStorage.getItem(key));
-            data.splice(index, 1);
-            localStorage.setItem(key, JSON.stringify(data));
-            callback();
-        }
+    function deleteQ(index) {
+        let questions = JSON.parse(localStorage.getItem('added_questions'));
+        questions.splice(index, 1);
+        localStorage.setItem('added_questions', JSON.stringify(questions));
+        renderQuestions();
     }
 
-    window.onload = function() {
-        renderLessons(); renderQuestions();
-        document.getElementById('adText').value = localStorage.getItem('platform_announcement') || "";
-        document.getElementById('quizDuration').value = localStorage.getItem('quiz_duration') || 10;
-    };
+    window.onload = renderQuestions;
 </script>
 </body>
 </html>
