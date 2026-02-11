@@ -145,4 +145,64 @@
         
         <div class="video-footer">
             <h2 id="videoTitle" style="margin:0; font-size: 20px;">Lesson Title</h2>
-            <button id="quizBtn
+            <button id="quizBtn" onclick="location.href='exam.html'">
+                <i class="fas fa-pen-to-square"></i> Take Quiz
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        // 1. تحديث الاسم ديناميكياً
+        const savedName = localStorage.getItem('student_name') || 'Student';
+        document.getElementById('welcomeName').innerText = `Welcome, ${savedName} 👋`;
+
+        // 2. عرض الإعلان
+        const announcement = localStorage.getItem('platform_announcement');
+        if(announcement && announcement.trim() !== "") {
+            const bar = document.getElementById('announcement-bar');
+            bar.innerText = announcement;
+            bar.style.display = 'block';
+        }
+
+        // 3. تحميل الدروس
+        loadLessons();
+    };
+
+    function loadLessons() {
+        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        const list = document.getElementById('lessonsList');
+        list.innerHTML = ""; 
+
+        if(lessons.length === 0) {
+            list.innerHTML = `<p style="padding:20px; color:#94a3b8; text-align:center;">No lessons added yet.</p>`;
+            return;
+        }
+
+        lessons.forEach((lesson, index) => {
+            const div = document.createElement('div');
+            div.className = 'lesson-item';
+            div.innerHTML = `<i class="fas fa-circle-play"></i> ${lesson.title}`;
+            div.onclick = () => {
+                document.querySelectorAll('.lesson-item').forEach(e => e.classList.remove('active'));
+                div.classList.add('active');
+                playVideo(lesson.url, lesson.title);
+            };
+            list.appendChild(div);
+        });
+    }
+
+    function playVideo(url, title) {
+        let videoId = "";
+        if(url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+        else if(url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1];
+        else videoId = url; 
+
+        document.getElementById('videoContainer').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1" allowfullscreen></iframe>`;
+        document.getElementById('videoTitle').innerText = title;
+        document.getElementById('quizBtn').style.display = 'flex';
+    }
+</script>
+</body>
+</html>
