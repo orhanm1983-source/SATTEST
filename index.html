@@ -1,37 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK - Login</title>
+    <title>TALAL.TEK - Step into Success</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --blue: #2c3e50; --sky: #3498db; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center; }
-        .brand { font-size: 2.2rem; font-weight: 800; color: var(--blue); margin-bottom: 5px; }
-        .brand span { color: var(--sky); }
-        .welcome-text { color: #64748b; margin-bottom: 30px; }
-        input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; font-size: 1rem; outline: none; transition: 0.3s; text-align: center; }
-        input:focus { border-color: var(--sky); }
-        .btn-login { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--blue); color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-login:hover { background: var(--sky); transform: translateY(-2px); }
+        :root { --primary: #3498db; --dark: #1e293b; --bg: #f8fafc; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg); margin: 0; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .auth-container {
+            background: white; width: 100%; max-width: 420px;
+            padding: 40px; border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .logo-area { margin-bottom: 30px; }
+        .logo-area h1 { color: var(--primary); margin: 0; font-size: 2.5rem; letter-spacing: -1px; }
+        .logo-area p { color: #64748b; margin-top: 5px; font-weight: 500; }
+
+        .form-group { text-align: left; margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--dark); font-weight: 600; font-size: 0.9rem; }
+        .form-group input { 
+            width: 100%; padding: 12px 15px; border-radius: 12px;
+            border: 2px solid #edf2f7; outline: none; transition: 0.3s;
+            box-sizing: border-box; font-size: 1rem;
+        }
+        .form-group input:focus { border-color: var(--primary); background: #f0f9ff; }
+
+        .main-btn { 
+            width: 100%; padding: 14px; background: var(--primary);
+            color: white; border: none; border-radius: 12px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: 0.3s; margin-top: 10px;
+        }
+        .main-btn:hover { background: #2980b9; transform: translateY(-2px); }
+
+        .toggle-mode { margin-top: 25px; color: #64748b; font-size: 0.95rem; }
+        .toggle-mode span { color: var(--primary); cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        .alert { 
+            padding: 12px; border-radius: 10px; font-size: 0.85rem; 
+            margin-bottom: 20px; display: none; 
+        }
+        .alert-error { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+        .alert-success { background: #ecfdf5; color: #10b981; border: 1px solid #d1fae5; }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="brand">TALAL<span>.TEK</span></div>
-        <p class="welcome-text">Enter your name to start</p>
-        <form onsubmit="doLogin(event)">
-            <input type="text" id="stuName" placeholder="Full Name" required>
-            <button type="submit" class="btn-login">Login</button>
-        </form>
+
+<div class="auth-container">
+    <div class="logo-area">
+        <h1>TALAL.TEK</h1>
+        <p id="subText">Create your student account</p>
     </div>
-    <script>
-        function doLogin(e) {
-            e.preventDefault();
-            localStorage.setItem('student_name', document.getElementById('stuName').value);
-            window.location.href = "home.html";
+
+    <div id="alertBox" class="alert"></div>
+
+    <div id="registrationForm">
+        <div class="form-group" id="nameWrapper">
+            <label>Full Name</label>
+            <input type="text" id="regName" placeholder="e.g. John Doe">
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="regEmail" placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="regPass" placeholder="Min. 6 characters">
+        </div>
+        <button class="main-btn" id="actionBtn" onclick="processAuth()">Create Account</button>
+    </div>
+
+    <div class="toggle-mode" id="toggleText">
+        Already have an account? <span onclick="switchMode(true)">Login</span>
+    </div>
+</div>
+
+<script>
+    let isLoginMode = false;
+
+    function switchMode(login) {
+        isLoginMode = login;
+        const nameWrapper = document.getElementById('nameWrapper');
+        const actionBtn = document.getElementById('actionBtn');
+        const subText = document.getElementById('subText');
+        const toggleText = document.getElementById('toggleText');
+        const alertBox = document.getElementById('alertBox');
+
+        alertBox.style.display = "none";
+
+        if (isLoginMode) {
+            nameWrapper.style.display = "none";
+            actionBtn.innerText = "Login to Portal";
+            subText.innerText = "Welcome back, student!";
+            toggleText.innerHTML = "New to the platform? <span onclick='switchMode(false)'>Register here</span>";
+        } else {
+            nameWrapper.style.display = "block";
+            actionBtn.innerText = "Create Account";
+            subText.innerText = "Create your student account";
+            toggleText.innerHTML = "Already have an account? <span onclick='switchMode(true)'>Login</span>";
         }
-    </script>
+    }
+
+    function processAuth() {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const pass = document.getElementById('regPass').value.trim();
+        const alertBox = document.getElementById('alertBox');
+
+        // التحقق الأساسي
+        if (!email || !pass || (!isLoginMode && !name)) {
+            showAlert("Please fill in all fields", "error");
+            return;
+        }
+
+        let db = JSON.parse(localStorage.getItem('students_db') || '[]');
+
+        if (!isLoginMode) {
+            // منطق إنشاء الحساب
+            if (db.find(user => user.email === email)) {
+                showAlert("This email is already registered!", "error");
+                return;
+            }
+            db.push({ name, email, pass, joinDate: new Date().toLocaleDateString() });
+            localStorage.setItem('students_db', JSON.stringify(db));
+            showAlert("Account created! You can login now.", "success");
+            setTimeout(() => switchMode(true), 1500);
+        } else {
+            // منطق تسجيل الدخول
+            const user = db.find(u => u.email === email && u.pass === pass);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showAlert("Login successful! Redirecting...", "success");
+                setTimeout(() => window.location.href = "home.html", 1000);
+            } else {
+                showAlert("Invalid email or password", "error");
+            }
+        }
+    }
+
+    function showAlert(msg, type) {
+        const alertBox = document.getElementById('alertBox');
+        alertBox.innerText = msg;
+        alertBox.className = `alert alert-${type}`;
+        alertBox.style.display = "block";
+    }
+</script>
+
 </body>
 </html>
