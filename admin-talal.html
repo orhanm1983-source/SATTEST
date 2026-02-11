@@ -3,91 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALAL.TEK | Admin Panel</title>
+    <title>TALAL.TEK | Pro Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        :root { --admin-dark: #0f172a; --admin-blue: #3b82f6; --bg: #f8fafc; }
+        :root { --admin-dark: #0f172a; --admin-blue: #3b82f6; --bg: #f1f5f9; --green: #10b981; --red: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
+        
+        /* Sidebar */
         .sidebar { width: 260px; background: var(--admin-dark); height: 100vh; color: white; padding: 25px; position: fixed; }
-        .sidebar h2 { color: var(--admin-blue); border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
-        .nav-link { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; margin: 8px 0; border-radius: 10px; transition: 0.3s; }
+        .sidebar h2 { color: var(--admin-blue); border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 20px; }
+        .nav-link { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; margin: 8px 0; border-radius: 10px; transition: 0.3s; cursor: pointer; }
         .nav-link:hover, .nav-link.active { background: #1e293b; color: var(--admin-blue); }
+
+        /* Content Area */
         .main-content { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
-        .admin-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 25px; }
-        .admin-section h2 { margin-top: 0; font-size: 1.2rem; margin-bottom: 15px; color: var(--admin-dark); }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; outline: none; }
-        input:focus, textarea:focus { border-color: var(--admin-blue); }
-        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .admin-section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 30px; }
+        
+        h2 { font-size: 1.3rem; color: var(--admin-dark); margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #e2e8f0; box-sizing: border-box; font-family: inherit; }
+        input:focus { border-color: var(--admin-blue); outline: none; }
+
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-blue { background: var(--admin-blue); color: white; }
-        .btn-green { background: #27ae60; color: white; }
-        .btn-orange { background: #e67e22; color: white; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
         .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Management Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        .delete-btn { color: var(--red); cursor: pointer; font-size: 1.2rem; }
+        .math-preview { background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; color: #64748b; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <h2>TALAL Admin</h2>
-    <a href="#" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
-    <a href="course.html" class="nav-link"><i class="fas fa-eye"></i> Student View</a>
+    <div class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="nav-link" onclick="showSection('lessons')"><i class="fas fa-video"></i> Lessons</div>
+    <div class="nav-link" onclick="showSection('exams')"><i class="fas fa-file-signature"></i> Exams Settings</div>
+    <a href="course.html" class="nav-link"><i class="fas fa-external-link-alt"></i> Preview as Student</a>
 </div>
 
 <div class="main-content">
-    <h1>Platform Management</h1>
-
-    <div class="admin-section">
-        <h2><i class="fas fa-bullhorn"></i> Post Announcement</h2>
-        <textarea id="adText" placeholder="Write a message to students..."></textarea>
-        <button class="btn btn-blue" onclick="publishNotice()">Publish Announcement</button>
+    
+    <div id="section-dashboard" class="content-tab">
+        <h1>Dashboard Overview</h1>
+        <div class="admin-section">
+            <h2><i class="fas fa-bullhorn"></i> General Announcement</h2>
+            <textarea id="adText" rows="3" placeholder="Write a message to all students... (e.g. Next session is on Sunday)"></textarea>
+            <button class="btn btn-blue" onclick="publishNotice()"><i class="fas fa-paper-plane"></i> Update Announcement</button>
+        </div>
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-clock"></i> Exam Global Settings</h2>
+            <label>Exam Duration (Minutes):</label>
+            <input type="number" id="quizDuration" placeholder="e.g. 30" min="1">
+            <button class="btn btn-blue" onclick="saveQuizSettings()">Save Settings</button>
+        </div>
     </div>
 
-    <div class="admin-section">
-        <h2><i class="fas fa-video"></i> Add Video Lesson</h2>
-        <input type="text" id="lessonTitle" placeholder="Lesson Title (e.g. Linear Equations)">
-        <input type="text" id="lessonUrl" placeholder="YouTube URL or Video ID">
-        <button class="btn btn-green" onclick="addLesson()">Add Lesson</button>
+    <div id="section-lessons" class="content-tab" style="display:none;">
+        <h1>Manage Lessons</h1>
+        <div class="admin-section">
+            <h2><i class="fas fa-plus-circle"></i> Add New Lesson</h2>
+            <div class="grid-2">
+                <input type="text" id="lessonTitle" placeholder="Lesson Title">
+                <input type="text" id="lessonUrl" placeholder="YouTube URL or ID">
+            </div>
+            <button class="btn btn-green" onclick="addLesson()"><i class="fas fa-save"></i> Save Lesson</button>
+        </div>
+
+        <div class="admin-section">
+            <h2>Current Lessons</h2>
+            <table id="lessonsTable">
+                <thead><tr><th>Title</th><th>URL</th><th>Action</th></tr></thead>
+                <tbody id="lessonsBody"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="admin-section">
-        <h2><i class="fas fa-database"></i> Dangerous Area</h2>
-        <p style="color: #ef4444; font-size: 13px;">This will wipe all your platform data (Lessons, Announcements, and Questions).</p>
-        <button class="btn" onclick="clearData()" style="background:#ef4444; color:white;">Clear All Platform Data</button>
+    <div id="section-exams" class="content-tab" style="display:none;">
+        <h1>Question Bank</h1>
+        <div class="admin-section">
+            <h2><i class="fas fa-question-circle"></i> Add New Question</h2>
+            <textarea id="qText" placeholder="Question Text (Use $ for math, e.g. $x^2 + y = 0$)"></textarea>
+            <input type="text" id="qImg" placeholder="Image URL (Optional)">
+            
+            <div class="grid-2">
+                <input type="text" id="optA" placeholder="Option A">
+                <input type="text" id="optB" placeholder="Option B">
+                <input type="text" id="optC" placeholder="Option C">
+                <input type="text" id="optD" placeholder="Option D">
+            </div>
+            
+            <label>Correct Answer:</label>
+            <select id="correctOpt">
+                <option value="A">Option A</option>
+                <option value="B">Option B</option>
+                <option value="C">Option C</option>
+                <option value="D">Option D</option>
+            </select>
+            
+            <button class="btn btn-green" onclick="addQuestion()"><i class="fas fa-plus"></i> Add to Exam</button>
+        </div>
+
+        <div class="admin-section">
+            <h2>Manage Questions (<span id="qCount">0</span>)</h2>
+            <div id="questionsList"></div>
+        </div>
     </div>
+
 </div>
 
 <script>
-    // تم تعديل المفتاح ليطابق صفحة الطالب الجديدة
-    function publishNotice() {
-        const text = document.getElementById('adText').value;
-        localStorage.setItem('adminAnnouncement', text);
-        alert('Announcement Published to Student Dashboard!');
+    // التنقل بين الأقسام
+    function showSection(sec) {
+        document.querySelectorAll('.content-tab').forEach(d => d.style.display = 'none');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.getElementById('section-' + sec).style.display = 'block';
+        event.currentTarget.classList.add('active');
     }
 
+    // 1. الإعلانات والوقت
+    function publishNotice() {
+        localStorage.setItem('platform_announcement', document.getElementById('adText').value);
+        alert('Announcement Updated!');
+    }
+
+    function saveQuizSettings() {
+        localStorage.setItem('quiz_duration', document.getElementById('quizDuration').value);
+        alert('Exam Duration Saved!');
+    }
+
+    // 2. إدارة الدروس
     function addLesson() {
         const title = document.getElementById('lessonTitle').value;
         const url = document.getElementById('lessonUrl').value;
-        
-        if(title && url) {
-            let lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
-            lessons.push({title, url});
-            localStorage.setItem('added_lessons', JSON.stringify(lessons));
-            alert('Lesson successfully added to Student Curriculum!');
-            // مسح الخانات بعد الإضافة
-            document.getElementById('lessonTitle').value = "";
-            document.getElementById('lessonUrl').value = "";
-        } else {
-            alert('Please fill both Title and Video URL');
+        if(!title || !url) return alert('Fill all fields');
+
+        let lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        lessons.push({title, url});
+        localStorage.setItem('added_lessons', JSON.stringify(lessons));
+        renderLessons();
+        document.getElementById('lessonTitle').value = "";
+        document.getElementById('lessonUrl').value = "";
+    }
+
+    function renderLessons() {
+        const lessons = JSON.parse(localStorage.getItem('added_lessons') || '[]');
+        const body = document.getElementById('lessonsBody');
+        body.innerHTML = lessons.map((l, i) => `
+            <tr>
+                <td>${l.title}</td>
+                <td>${l.url.substring(0,20)}...</td>
+                <td><i class="fas fa-trash delete-btn" onclick="deleteItem('added_lessons', ${i}, renderLessons)"></i></td>
+            </tr>
+        `).join('');
+    }
+
+    // 3. إدارة الأسئلة
+    function addQuestion() {
+        const q = {
+            text: document.getElementById('qText').value,
+            img: document.getElementById('qImg').value,
+            options: [
+                document.getElementById('optA').value,
+                document.getElementById('optB').value,
+                document.getElementById('optC').value,
+                document.getElementById('optD').value
+            ],
+            correct: document.getElementById('correctOpt').value
+        };
+
+        let questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        questions.push(q);
+        localStorage.setItem('added_questions', JSON.stringify(questions));
+        renderQuestions();
+        // مسح الخانات
+        ['qText', 'qImg', 'optA', 'optB', 'optC', 'optD'].forEach(id => document.getElementById(id).value = "");
+    }
+
+    function renderQuestions() {
+        const questions = JSON.parse(localStorage.getItem('added_questions') || '[]');
+        document.getElementById('qCount').innerText = questions.length;
+        const list = document.getElementById('questionsList');
+        list.innerHTML = questions.map((q, i) => `
+            <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                <span>${i+1}. ${q.text.substring(0,40)}...</span>
+                <i class="fas fa-trash delete-btn" onclick="deleteItem('added_questions', ${i}, renderQuestions)"></i>
+            </div>
+        `).join('');
+    }
+
+    // وظيفة الحذف العامة
+    function deleteItem(key, index, callback) {
+        if(confirm('Are you sure you want to delete this?')) {
+            let data = JSON.parse(localStorage.getItem(key));
+            data.splice(index, 1);
+            localStorage.setItem(key, JSON.stringify(data));
+            callback();
         }
     }
 
-    function clearData() {
-        if(confirm("DANGER! Are you sure you want to delete everything? Students will see an empty page.")) {
-            localStorage.removeItem('added_lessons');
-            localStorage.removeItem('added_questions');
-            localStorage.removeItem('adminAnnouncement');
-            location.reload();
-        }
-    }
+    window.onload = function() {
+        renderLessons();
+        renderQuestions();
+        document.getElementById('adText').value = localStorage.getItem('platform_announcement') || "";
+        document.getElementById('quizDuration').value = localStorage.getItem('quiz_duration') || 10;
+    };
 </script>
 </body>
 </html>
